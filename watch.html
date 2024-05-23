@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="watch.css">
+    <script defer src="watch.js"></script>
+    <link rel="stylesheet" href="global.css">
+    <script  src="https://cdn.jsdelivr.net/npm/hls.js@^1.5.0/dist/hls.min.js"></script>
+    <script  defer src="global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/artplayer@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/artplayer-plugin-hls@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="shortcut icon" href="images/icon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+</head>
+<body>
+    <div class='main'>
+        <div class="nav-bar">
+        
+            <div class="logo-holder">
+                <h1 class="zanime">zAnime</h1>
+            </div>
+           <div class="nav-button-holder flex">
+           <ul id='list-of-links' class='list-of-links flex'>
+                <li><span  aria-hidden='true' class="home-button">Home</span> </li>
+                <li><span aria-hidden='true' class="genre-button">Genre</span></li>
+                <li><span aria-hidden='true'class="latest-button">Latest</span> </li>
+                <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
+                <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
+            </ul>
+           </div>
+
+
+            <div class="search-bar">
+                <input type="text" name="" class="search-input"  placeholder='Search...'  />
+                <div class="search-results">
+                    
+                </div>
+            </div>
+            <button class='mobile-nav-toggle' aria-controls='list-of-links' aria-expanded='false' >
+              <span class="sr-only">Menu</span>
+            </button>
+
+
+        </div>
+    <div class="video-container">
+        <div class="spinner"></div>
+        <!-- <div class="skeleton-video"></div>  -->
+        <!-- <div class="placeholder"></div> -->
+        <div class="artplayer-app">
+            <video src="" id="my_video_1" controls ></video>
+        </div>
+    </div> 
+    <!-- <div class="choose-server">
+        <a class="zoro btn" >zoro</a>
+    </div> -->
+
+    <div class="episode-holder">
+        <div class="title-holder">
+            <h3 class="episode-title">Episodes</h3>
+            <select name="episodes" id="episodes"></select>
+
+        </div>
+      
+        <div class="sub-div"></div>
+        <div class="related-holder">
+            
+        </div>
+    </div>
+        
+</div>
+            <script>
+                function playM3u8(video, url, art) {
+                    if (Hls.isSupported()) {
+                        if (art.hls) art.hls.destroy();
+                        const hls = new Hls();
+                        hls.loadSource(url);
+                        hls.attachMedia(video);
+                        art.hls = hls;
+                        art.on('destroy', () => hls.destroy());
+                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                        video.src = url;
+                    } else {
+                        art.notice.show = 'Unsupported playback format: m3u8';
+                    }
+                }
+
+                const video = document.getElementById('my_video_1');
+                let art;
+
+                async function updateVideoSource() {
+                    const videoSrc = JSON.parse(window.sessionStorage.getItem('anime-episode'));
+
+                    if (!videoSrc) {
+                        return;
+                    }
+                    
+                    showSkeleton();
+
+                    if (art) {
+                        art.destroy(); 
+                    }
+
+                    art = new Artplayer({
+                        container: '.artplayer-app',
+                        url: videoSrc,
+                        fullscreen:true,
+                        type: 'm3u8',
+                        customType: {
+                            m3u8: playM3u8,
+                        },
+                    });
+
+                    art.on('ready', () => {
+                        console.info(art.hls);
+                        hideSkeleton();
+                    });
+                    document.querySelector('.art-video-player').style.display = 'block'
+                }
+
+                updateVideoSource();
+
+                window.addEventListener('animeEpisodeChange', updateVideoSource);
+
+                function showSkeleton() {
+                    const skeletonVideo = document.querySelector('.spinner');
+                    skeletonVideo.style.display = 'block';
+                }
+
+                function hideSkeleton() {
+                    const skeletonVideo = document.querySelector('.spinner');
+                    skeletonVideo.style.display = 'none';
+                    document.querySelector('.artplayer-app').style.visibility = 'visible'
+                }
+            </script>
+
+        
+</body>
+</html>

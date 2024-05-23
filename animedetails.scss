@@ -1,0 +1,112 @@
+
+.anime-details-container{
+    position: relative;
+    .background-image{
+        position: relative;
+        width: 100vw;
+        height: 70vh;
+        
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        
+        
+    }
+    .gradient-overlay{
+        width: 100%;
+        height:100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background: linear-gradient(180deg,hsla(0,0%,100%,0) 25%,#000);
+    }
+    .anime-cover-image{
+        position: relative;
+        bottom: -35%;
+        left: 5%;
+        display: flex;
+
+        .cover-image{
+            max-height: 400px;
+            padding-right: 1.5rem;
+            margin-top: -10rem;
+        }
+        .details{
+            padding: 1rem;
+            padding-top: 5rem;
+            margin-top: -11rem;
+            width: 50%;
+            .button-holder{
+                display: flex;
+                flex-direction: row;
+                span{
+                    margin-right: 1rem;
+                    
+                }
+                
+            }
+            .button-holder:nth-child(2){
+                padding:1.3rem
+            }
+        }
+    }
+    .description{
+        overflow: hidden;
+            text-overflow: ellipsis
+        p{
+            max-width: 350px;
+            
+        }
+    }
+}
+video{
+    width: 750px;
+    aspect-ratio: 16/9;
+
+}
+.video-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    margin-top: 15rem;
+    padding: 5rem;
+}
+
+.btn{
+    margin-top:4rem;
+}
+
+.details2{
+    display: grid;
+    grid-template-columns: .5fr 2fr;
+    position: relative;
+    margin: 4rem 0rem;
+    left:5%;
+    .description-div{
+        position: relative;
+        // left: 25%;
+        
+        font-size: 1.3rem;
+        max-width: 90%;
+    }
+    .side-div{
+        position: relative;
+        
+        .studio-div, .genre-div, .airing-div, .type-div{
+            position: relative;
+            font-size: 1.2rem;
+            max-width: 50%;
+            margin-bottom: 2rem;
+            width: 100%;
+            // left:25%;
+        }
+
+    }
+
+}
+
+
+.latest-release{
+    margin-top: 5rem;
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="animeoutput.css">
+    <link rel="stylesheet" href="global.css">
+    <script  defer src="anime-details.js"></script>
+    <script  defer src="global.js"></script>
+    <script  src="https://cdn.jsdelivr.net/npm/hls.js@^1.5.0/dist/hls.min.js"></script>
+    <link rel="shortcut icon" href="images/icon.jpg">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+</head>
+<body>
+    <div class='main'>
+        
+        <div class="nav-bar">
+            <div id="loading-bar"></div>
+            <div class="logo-holder">
+                <h1 class="zanime">zAnime</h1>
+            </div>
+           <div class="nav-button-holder flex">
+           <ul id='list-of-links' class='list-of-links flex'>
+                <li><span  aria-hidden='true' class="home-button">Home</span> </li>
+                <li><span aria-hidden='true' class="genre-button">Genre</span></li>
+                <li><span aria-hidden='true'class="latest-button">Latest</span> </li>
+                <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
+                <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
+            </ul>
+           </div>
+
+
+            <div class="search-bar">
+                <input type="text" name="" class="search-input"  placeholder='Search...'  />
+                <div class="search-results">
+                    
+                </div>
+            </div>
+            <button class='mobile-nav-toggle' aria-controls='list-of-links' aria-expanded='false' >
+              <span class="sr-only">Menu</span>
+            </button>
+
+
+        </div>
+        <div class="anime-details-container">
+            <div class="background-image">
+                <div class="gradient-overlay">
+    
+                </div>
+                
+                
+            </div>
+            
+            <div class="anime-cover-image">
+                <img src="" alt="" class="cover-image">
+                <div class="details">
+                    <h2 class="anime-title"></h2>
+                    <p  class="other-title"></p>
+                    <p class="rating"> </p>
+                    <div class="button-holder">
+                        <span><a  class="btn"><img src="images/triangular-play-button-svgrepo-com.svg" alt="play triangle" class="play-triangle">Watch Now</a>
+                        </span>
+                        <span>
+                            <a  class="btn"><img  src="https://img.icons8.com/ios/50/bookmark-ribbon--v1.png" alt="bookmark-ribbon--v1" class="play-triangle"/>Watch Later</a>
+                        </span>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            </div>
+            <div class="details2">
+                <div class="side-div">
+                    <div class="studio-div">Studios: 
+
+                    </div>
+                    <div class="genre-div">Genres: 
+                        
+                    </div>
+                    <div class="airing-div">Status: 
+                        
+                    </div>
+                    <div class="type-div">Type: 
+                        
+                    </div>
+                </div>
+                <div class="description-div">
+                
+                </div>
+            </div>
+            <div class="episode-holder">
+                <div class="spinner"></div>
+                <div class="title-holder">
+                    <h3>Episodes</h3>
+                    <select name="episodes" id="episodes"></select>
+                </div>
+                
+                <div class="sub-div">
+
+                </div>
+                
+            </div>
+                
+                <div class="latest-release">
+                    <div class="h2-holder">
+                        <h2>Recommended Anime</h2>
+                    </div>
+                    
+                    <div class="carousel-wrapper">
+                        <span class="latest-prev-span"><button class="prev-btn1"></button></span>
+                        <div class="latest-card-holder">
+                           <div class="spinner"></div>
+                        </div>
+                        <span class="latest-next-span"><button class="next-btn1"></button></span>
+                    </div>
+                    
+                  
+            </div>
+        </div>
+       
+        
+
+   
+       
+
+        
+</html>

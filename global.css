@@ -1,0 +1,481 @@
+body {
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+  background-color: black;
+  color: white;
+  font-family: "Lato", sans-serif;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+:root {
+  --grid-columns: 6;
+}
+
+@media (max-width: 1300px) {
+  :root {
+    --grid-columns: 5;
+  }
+}
+@media (max-width: 1200px) {
+  :root {
+    --grid-columns: 4;
+  }
+}
+@media (max-width: 900px) {
+  :root {
+    --grid-columns: 3;
+  }
+}
+@media (max-width: 700px) {
+  :root {
+    --grid-columns: 2;
+  }
+}
+@media (max-width: 478px) {
+  :root {
+    --grid-columns: 1.4;
+  }
+}
+:root {
+  box-sizing: border-box;
+}
+
+.flex {
+  display: flex;
+}
+
+.sr-only {
+  visibility: hidden;
+}
+
+.btn {
+  display: flex;
+  font-size: 1.3rem;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  padding: 0.8rem;
+  width: fit-content;
+  color: #000000;
+  border-radius: 15px;
+}
+
+.btn:hover {
+  cursor: pointer;
+}
+
+.play-triangle {
+  max-width: 1.8rem;
+  max-height: 1.8rem;
+  margin-right: 0.3rem;
+}
+
+#episodes {
+  background-color: black;
+  color: white;
+  border-radius: 6px;
+  padding: 0.4rem;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+}
+.main .nav-bar {
+  height: 12vh;
+  width: 100vw;
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: 1fr 1fr 1.6fr;
+  background-color: rgb(0, 0, 0);
+  border-bottom: 1px solid rgb(146, 145, 145);
+  color: white;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding-left: 2rem;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+}
+.main .nav-bar .logo-holder h1 {
+  margin: 0;
+  padding: 0px 1rem;
+  cursor: pointer;
+}
+.main .nav-bar ul {
+  list-style: none;
+  flex-direction: row;
+  text-decoration: none !important;
+}
+.main .nav-bar ul li {
+  padding-right: 1rem;
+  padding-bottom: 0;
+  font-size: 1.2rem;
+}
+.main .nav-bar ul li span {
+  cursor: pointer;
+}
+.main .nav-bar .search-bar input {
+  padding: 0.5rem;
+  width: 220px;
+  background-color: inherit;
+  border: 1px solid grey;
+  border-radius: 6px;
+  color: white;
+  transition: width 0.3s ease;
+  margin-right: 1rem;
+}
+.main .nav-bar .search-bar {
+  display: flex;
+  align-items: end;
+  justify-content: right;
+  position: relative;
+  box-sizing: border-box;
+}
+.main .nav-bar .search-bar .search-input {
+  position: relative;
+  right: 3%;
+}
+.main .nav-bar .search-bar .search-results {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  width: 430px;
+  max-height: 60vh;
+  visibility: hidden;
+  position: absolute;
+  top: 38px;
+  right: 4%;
+  background-color: rgb(42, 41, 41);
+}
+.main .nav-bar .search-bar .search-results img {
+  width: 80px;
+  height: 120px;
+  padding-right: 0.7rem;
+}
+.main .nav-bar .search-bar .search-results .result {
+  text-align: left;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  height: 20%;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.main .nav-bar .search-bar .search-results .result p {
+  font-size: 1rem;
+  padding: 0.6rem 0rem 0.6rem 2rem;
+}
+.main .nav-bar .search-bar .search-results .result:hover {
+  cursor: pointer;
+  background-color: gray;
+}
+.main .nav-bar .search-bar .search-results.active {
+  visibility: visible;
+  z-index: 99;
+}
+.main .nav-bar .nav-button-holder {
+  flex-direction: row;
+}
+
+.mobile-nav-toggle {
+  display: none;
+}
+
+.mobile-search {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .main .nav-bar .logo-holder h1 {
+    margin: 0;
+    padding: 0px 1rem;
+  }
+  .main .nav-bar .nav-button-holder {
+    background-color: black;
+    position: fixed;
+    inset: 0 0 0 30%;
+    height: 100vh;
+    padding: min(20vh, 4rem) 2rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  .main .nav-bar .nav-button-holder .list-of-links {
+    list-style: none;
+    font-size: 2rem;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  .main .nav-bar .nav-button-holder.toggled {
+    transform: translateX(0%);
+  }
+  .main .nav-bar .search-bar {
+    display: none;
+  }
+  .main .nav-bar .nav-button-holder {
+    flex-direction: row;
+  }
+  .main .mobile-nav-toggle {
+    display: block;
+  }
+  .main .mobile-search {
+    display: block;
+  }
+  .search-bar {
+    display: none;
+  }
+  .nav-button-holder {
+    background-color: black;
+    position: fixed;
+    inset: 0 0 0 30%;
+    height: 100vh;
+    padding: min(20vh, 10rem) 2rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  .nav-button-holder .list-of-links {
+    font-size: 2rem;
+    text-decoration: underline;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  .nav-button-holder.toggled {
+    transform: translateX(0%);
+  }
+  .mobile-nav-toggle {
+    height: 50px;
+    width: 50px;
+    display: block;
+    position: absolute;
+    background: url("/images/icon-hamburger.svg");
+    background-repeat: no-repeat;
+    aspect-ratio: 1;
+    z-index: 9999;
+    top: 2rem;
+    right: 1rem;
+    border: 0;
+    cursor: pointer;
+  }
+  .mobile-nav-toggle.toggled {
+    background: url("/images/icon-close.svg");
+    background-repeat: no-repeat;
+    aspect-ratio: 1;
+  }
+  .mobile-search {
+    background-color: black;
+    color: white;
+    border: 2px solid rgb(186, 186, 186);
+    border-radius: 6px;
+    padding: 1rem 0.4rem;
+  }
+}
+#loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background-color: #007bff;
+  z-index: 9999;
+  transition: width 0.3s ease;
+}
+
+.loading {
+  width: 30%;
+}
+
+.loaded {
+  width: 100%;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #3498db; /* Change color as needed */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block; /* Initially hidden */
+  z-index: 99;
+}
+
+.episode-holder {
+  position: relative;
+  left: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  margin-top: 4rem;
+}
+.episode-holder .title-holder {
+  max-width: 900px;
+}
+.episode-holder .title-holder h3 {
+  display: inline;
+  padding-right: 0.4rem;
+}
+.episode-holder .sub-div {
+  width: 90%;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 66px);
+  grid-gap: 1rem;
+  justify-content: start;
+  box-sizing: border-box;
+  position: relative;
+}
+.episode-holder .sub-div .episode-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #222222;
+  color: rgb(154, 154, 154);
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  max-width: 66px;
+}
+.episode-holder .sub-div .episode-button:hover {
+  cursor: pointer;
+  background-color: #434242;
+}
+.episode-holder .sub-div .episode-button.current {
+  background-color: white;
+  color: rgb(0, 0, 0);
+}
+
+.latest-release, .popular {
+  max-width: 100%;
+}
+.latest-release .h2-holder, .popular .h2-holder {
+  width: 100vw;
+  margin-bottom: 2rem;
+}
+.latest-release .h2-holder h2, .popular .h2-holder h2 {
+  display: inline;
+  position: relative;
+  left: 5%;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+  border-bottom: 4px solid white;
+}
+.latest-release .carousel-wrapper, .popular .carousel-wrapper {
+  position: relative;
+  margin-bottom: 4rem;
+}
+.latest-release .carousel-wrapper .latest-next-span, .latest-release .carousel-wrapper .latest-prev-span, .popular .carousel-wrapper .latest-next-span, .popular .carousel-wrapper .latest-prev-span {
+  position: absolute;
+  top: 15%;
+  width: 50px;
+  height: 300px;
+  z-index: 888;
+  border: none;
+  cursor: pointer;
+}
+.latest-release .carousel-wrapper .latest-next-span, .popular .carousel-wrapper .latest-next-span {
+  right: 0;
+}
+.latest-release .carousel-wrapper .latest-prev-span, .popular .carousel-wrapper .latest-prev-span {
+  left: 3%;
+}
+.latest-release .carousel-wrapper .prev-btn1, .latest-release .carousel-wrapper .next-btn1, .latest-release .carousel-wrapper .prev-btn2, .latest-release .carousel-wrapper .next-btn2, .popular .carousel-wrapper .prev-btn1, .popular .carousel-wrapper .next-btn1, .popular .carousel-wrapper .prev-btn2, .popular .carousel-wrapper .next-btn2 {
+  position: absolute;
+  top: 35%;
+  width: 25px;
+  height: 25px;
+  z-index: 888;
+  border: none;
+  cursor: pointer;
+}
+.latest-release .carousel-wrapper .prev-btn1, .latest-release .carousel-wrapper .prev-btn2, .popular .carousel-wrapper .prev-btn1, .popular .carousel-wrapper .prev-btn2 {
+  display: none;
+  background: url("images/left-arrow.svg");
+  background-repeat: no-repeat;
+  left: 3%;
+}
+.latest-release .carousel-wrapper .next-btn1, .latest-release .carousel-wrapper .next-btn2, .popular .carousel-wrapper .next-btn1, .popular .carousel-wrapper .next-btn2 {
+  background: url("images/arrow-next-right-icon.svg");
+  background-repeat: no-repeat;
+  right: 0;
+}
+.latest-release .carousel-wrapper .latest-card-holder, .latest-release .carousel-wrapper .popular-card-holder, .popular .carousel-wrapper .latest-card-holder, .popular .carousel-wrapper .popular-card-holder {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(100% / var(--grid-columns));
+  grid-template-rows: repeat(1, auto);
+  gap: 2rem;
+  overflow-x: hidden;
+  left: 5%;
+  padding-right: 8rem;
+}
+.latest-release .carousel-wrapper .off-screen-blur, .popular .carousel-wrapper .off-screen-blur {
+  opacity: 0.2;
+}
+.latest-release .carousel-wrapper .image-holder, .popular .carousel-wrapper .image-holder {
+  white-space: wrap;
+  overflow: hidden;
+  position: relative;
+  padding-top: 2rem;
+}
+.latest-release .carousel-wrapper .image-holder .anime-image, .popular .carousel-wrapper .image-holder .anime-image {
+  max-height: 350px;
+  min-width: 100%;
+  transition: transform 0.3s ease;
+}
+.latest-release .carousel-wrapper .image-holder .hover-blur, .popular .carousel-wrapper .image-holder .hover-blur {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  min-height: 370px;
+  min-width: 100%;
+  position: absolute;
+  top: 6.1%;
+  left: 0;
+  opacity: 0;
+  transition: transform 0.3s ease;
+}
+.latest-release .carousel-wrapper .image-holder .hover-blur a, .popular .carousel-wrapper .image-holder .hover-blur a {
+  width: 150px;
+  height: 150px;
+}
+.latest-release .carousel-wrapper .image-holder .hover-blur a img, .popular .carousel-wrapper .image-holder .hover-blur a img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.latest-release .carousel-wrapper .image-holder .hover-blur a:hover, .popular .carousel-wrapper .image-holder .hover-blur a:hover {
+  cursor: pointer;
+}
+.latest-release .carousel-wrapper .image-holder:hover .hover-blur,
+.latest-release .carousel-wrapper .image-holder:hover .anime-image, .popular .carousel-wrapper .image-holder:hover .hover-blur,
+.popular .carousel-wrapper .image-holder:hover .anime-image {
+  transform: translateY(-5%);
+  cursor: pointer;
+}
+.latest-release .carousel-wrapper .hover-blur:hover, .popular .carousel-wrapper .hover-blur:hover {
+  opacity: 1;
+}
+
+.fa-play, .fa-star {
+  padding-right: 0.2rem;
+}
+
+/*# sourceMappingURL=global.css.map */
