@@ -10,6 +10,7 @@
     <link rel="shortcut icon" href="images/icon.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
 </head>
@@ -22,22 +23,30 @@
             <h1 class="zanime">zAnime</h1>
             </div>
            <div class="nav-button-holder flex">
+            <div class="genres-holder">
+                <div class="genres">
+                        
+
+                </div>
+            </div>
            <ul id='list-of-links' class='list-of-links flex'>
                 <li><span  aria-hidden='true' class="home-button">Home</span> </li>
                 <li><span aria-hidden='true' class="genre-button">Genre</span></li>
-                <li><span aria-hidden='true'class="latest-button">Latest</span> </li>
+                <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
                 <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
                 <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
             </ul>
            </div>
 
-
+     
             <div class="search-bar">
-                <input type="text" name="" class="search-input"  placeholder='Search...'  />
-                <div class="search-results">
-                    
-                </div>
+                <form class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="search" class="search-input hidden" placeholder="Search..." />
+                    <div class="search-results"></div>
+                </form>
             </div>
+            
             <button class='mobile-nav-toggle' aria-controls='list-of-links' aria-expanded='false' >
               <span class="sr-only">Menu</span>
             </button>
@@ -50,7 +59,7 @@
                <div class="background"></div>
                 <div class="side-gradient-overlay"></div>
                 <div class="bottom-gradient-overlay"></div>
-                <div class="details">
+                <div class="details  ">
                     <div class="image-holder">
                     </div>
                     <h3 class="recommended-title">
@@ -73,11 +82,11 @@
             </div>
             
             <div class="carousel-wrapper">
-                <span class="latest-prev-span"><button class="prev-btn1"></button></span>
-                <div class="latest-card-holder">
+                <span class="carousel-prev-span"><button class="carousel-prev"></button></span>
+                <div class="carousel latest">
                    <div class="spinner"></div>
                 </div>
-                <span class="latest-next-span"><button class="next-btn1"></button></span>
+                <span class="carousel-next-span"><button class="carousel-next"></button></span>
             </div>
             
           
@@ -85,8 +94,8 @@
             
     <div class="hold"><p>Recommended This Season</p></div>
 
-    <div class="recommended2">
-        <div class="image-holder">
+    <div class="recommended2 flex">
+        <div class="recommended-image">
         </div>
         <div class="details">
             <h4 class="recommended-title">
@@ -110,15 +119,19 @@
         </div>
         
         <div class="carousel-wrapper">
-            <button class="prev-btn2"></button>
-            <div class="popular-card-holder">
+            <span class="carousel-prev-span"><button class="carousel-prev"></button></span>
+            <div class="carousel popular">
                <div class="spinner"></div>
             </div>
-            <button class="next-btn2"></button>
+            <span class="carousel-next-span"><button class="carousel-next"></button></span>
         </div>
         
       
     </div>
+        <div class="footer">
+            <span class="copyright">&copy;</span> <span class="zanime">Zanime</span>
+            <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"><img src="images/icons8-linkedin-96.png" alt="" class="linkedin-logo"></div>
+        </div>
     </div>
     <script  src="index.js"></script>
  

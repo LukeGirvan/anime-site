@@ -1,103 +1,18 @@
 
-interface Results{
-    title:string;
-    images:{
-        jpg:{
-            image_url:string;
-            large_image_url:string;
-            small_image_url:string;
-        },
-        webp:{
-            image_url:string;
-            large_image_url:string;
-            small_image_url:string;
-        }
-    }
-    score:string;
+type ReleasingOptions = 'RELEASING' | 'FINISHED' | 'NOT_YET_RELEASED';
+type ReleasingRelations = {
+  [key in ReleasingOptions]: Function;
+};
 
-}
-interface Anime {
-  id: number;
-  idMal: number;
-  title: {
-    romaji: string;
-    english: string;
-  };
-  coverImage: {
-    extraLarge: string;
-  };
-  bannerImage: string;
-  averageScore: number;
-  description: string;
-  status: string;
-  recommendations: {
-    edges: {
-      node: {
-        id: number;
-        mediaRecommendation: {
-          id: number;
-          title: {
-            romaji: string;
-            english: string;
-          };
-        };
-      };
-    }[];
-  };
-}
 
-interface PopularResponse {
-  data: {
-    Page: {
-      media: Anime[];
-    };
-  };
-}
-
-interface Release{
-    latest:{
-        title:string;
-    images:{
-        jpg:{
-            image_url:string;
-            large_image_url:string;
-            small_image_url:string;
-        },
-        webp:{
-            image_url:string;
-            large_image_url:string;
-            small_image_url:string;
-        }
-    }
-    score:string;
-
-    };
-
-    popular:{
-        title:string;
-        images:{
-            jpg:{
-                image_url:string;
-                large_image_url:string;
-                small_image_url:string;
-            },
-            webp:{
-                image_url:string;
-                large_image_url:string;
-                small_image_url:string;
-            }
-        }
-        score:string;
-    
-    };
-
-}
 
 
 
 class HomePage {
-    index:number;
-    popular: any[];
+    firstOffScreen:number;
+    latestScrollBy:number;
+    popularScrollBy:number;
+    popular: any;
     images: any[];
     queryTimer: any;
     queryData: any[];
@@ -107,10 +22,18 @@ class HomePage {
     animeData:any;
     start:number;
     randomIndex:any;
+    latestIsScrolling:boolean;
+    popularIsScrolling:boolean;
+    limit:number;
     constructor() {
+      this.firstOffScreen = 0;
+      this.limit = 0;
+      this.latestIsScrolling = false;
+      this.popularIsScrolling = false;
         this.randomIndex = null;
         this.start = 0;
-        this.index = 0;
+        this.latestScrollBy = 0;
+        this.popularScrollBy = 0;
         this.images = [];
         this.queryTimer = null;
         this.queryData = [];
@@ -130,6 +53,7 @@ class HomePage {
       const target  = e.target as HTMLElement
       console.log(target.id)
       const index = (e.target as HTMLElement).id
+
       if(window.sessionStorage.getItem('anime-episode')){
         window.sessionStorage.removeItem('anime-episode')
       }
@@ -187,43 +111,109 @@ class HomePage {
   
   
   
-    async fetchPopular(): Promise<PopularResponse> {
+    async fetchPopular(){
       const query = `
-        query {
-          Page(page: 1, perPage: 25) {
-            media(sort: POPULARITY_DESC, type: ANIME) {
-              id
-              idMal
-              title {
-                romaji
-                english
+      query {
+        Page(page: 1, perPage: 20) {
+          media(sort: POPULARITY_DESC, type: ANIME) {
+            startDate {
+              year
+              month
+              day
+            }
+            id
+            idMal
+            format
+            title {
+              romaji
+              english
+              userPreferred
+            }
+            popularity
+            coverImage {
+              extraLarge
+            }
+            bannerImage
+            averageScore
+            description
+            episodes
+            type
+            status
+            
+            genres
+            nextAiringEpisode {
+              airingAt
+              timeUntilAiring
+              episode
+            }
+            relations {
+              edges {
+                relationType
+                node {
+                  id
+                  title {
+                    romaji
+                    english
+                    userPreferred
+                  }
+                  coverImage {
+                    extraLarge
+                    large
+                  }
+                }
               }
-              coverImage {
-                extraLarge
+            }
+            studios {
+              edges {
+                node {
+                  id
+                  name
+                }
               }
-              bannerImage
-              averageScore
-              description
-              episodes
-              type
-              status
-              recommendations {
-                edges {
-                  node {
+            }
+            recommendations {
+              edges {
+                node {
+                  id
+                  mediaRecommendation {
                     id
-                    mediaRecommendation {
-                      id
-                      title {
-                        romaji
-                        english
+                    idMal
+                    bannerImage
+                    title {
+                      romaji
+                      english
+                    }
+                    coverImage {
+                      extraLarge
+                      large
+                    }
+                    episodes
+                    nextAiringEpisode {
+                      airingAt
+                      timeUntilAiring
+                      episode
+                    }
+                    averageScore
+                    description
+                    type
+                    status
+                    studios {
+                      edges {
+                        node {
+                          id
+                          name
+                        }
                       }
                     }
+                    genres
                   }
                 }
               }
             }
           }
         }
+      }
+      
       `;
   
       const url = 'https://graphql.anilist.co';
@@ -236,8 +226,10 @@ class HomePage {
       };
   
       const response = await fetch(url, options);
-     
-      return response.json();
+      const data = await response.json()
+      console.log(data)
+      return data.data.Page.media
+      // return response.json();
     }
   
     async getPopular(): Promise<void> {
@@ -245,17 +237,17 @@ class HomePage {
       const details = divForBg.querySelector('.details')  as  HTMLDivElement
       const spinner = document.querySelector('.spinner') as HTMLDivElement
       details.style.visibility = 'hidden'
-      const cachedData = window.sessionStorage.getItem('recommended');
-      let response: PopularResponse;
+      const cachedData = window.sessionStorage.getItem('popular');
+      let response;
   
       if (cachedData) {
-        response = JSON.parse(cachedData) as PopularResponse;
+        response = JSON.parse(cachedData);
       } else {
-        response = await this.fetchPopular();
-        window.sessionStorage.setItem('recommended', JSON.stringify(response));
+        response = await homePage.fetchPopular();
+        window.sessionStorage.setItem('popular', JSON.stringify(response));
       }
-  
-      this.popular = response.data?.Page.media || response;
+      console.log(response)
+      this.popular = response
       
       const titleDiv = document.querySelector('.slide > .details > .recommended-title') as HTMLTitleElement;
       const ratingDiv = document.querySelector('.slide > .details > .rating') as HTMLDivElement;
@@ -264,7 +256,7 @@ class HomePage {
   
       const randomIndex = Math.floor(Math.random() * this.popular.length);
       const selectedAnime = this.popular[randomIndex];
-      const titleString = selectedAnime.title.english;
+      const titleString = selectedAnime.title.userPreferred;
       const ratingText = (selectedAnime.averageScore / 10).toString();
       const descriptionText = selectedAnime.description.length < 400 
         ? selectedAnime.description 
@@ -315,13 +307,20 @@ class HomePage {
             perPage
           }
           media(sort: TRENDING_DESC, id: $id, type: ANIME) {
+            startDate {
+              year
+              month
+              day
+            }
             id
             idMal
+            format
             title {
               romaji
-              english 
-              
+              english
+              userPreferred
             }
+            popularity
             coverImage {
               extraLarge
             }
@@ -331,27 +330,86 @@ class HomePage {
             episodes
             type
             status
+            studios {
+              edges {
+                node {
+                  id
+                  name
+                }
+              }
+            }
+            genres
             nextAiringEpisode {
               airingAt
               timeUntilAiring
               episode
             }
-            startDate {
-              year
-              month
-              day
+            relations {
+              edges {
+                relationType
+                node {
+                  id
+                  title {
+                    romaji
+                    english
+                    userPreferred
+                  }
+                  coverImage {
+                    extraLarge
+                    large
+                  }
+                }
+              }
             }
-            
+            recommendations {
+              edges {
+                node {
+                  id
+                  mediaRecommendation {
+                    id
+                    bannerImage
+                    idMal
+                    title {
+                      romaji
+                      english
+                    }
+                    coverImage {
+                      extraLarge
+                      large
+                    }
+                    episodes
+                    nextAiringEpisode {
+                      airingAt
+                      timeUntilAiring
+                      episode
+                    }
+                    averageScore
+                    description
+                    type
+                    status
+                    studios {
+                      edges {
+                        node {
+                          id
+                          name
+                        }
+                      }
+                    }
+                    genres
+                  }
+                }
+              }
+            }
           }
-         
         }
       }
+      
     `;
   
     // Define the variables for the query
     const variables = {
       page: 1,
-      perPage: 25
+      perPage: 20
     };
   
     // Define the GraphQL endpoint
@@ -365,39 +423,88 @@ class HomePage {
       },
       body: JSON.stringify({ query, variables })
     };
-    const start = performance.now()
+ 
     const response = await fetch(url, options)
     console.log(response)
     const data =  await response.json()
-    const end = performance.now()
-    console.log(end-start)
-    return data
-
+    const filteredData = data.data.Page.media.filter((media: any) => media.status !== 'NOT_YET_RELEASED');
+  
+    return filteredData;
+  
       // const response= await  fetch('http://localhost:3000/anime/gogoanime/top-airing')
       // return response.json()
     }
 
 
-    async populateCards(){
-        const cardholder = document.querySelector('.latest-card-holder') as HTMLDivElement 
-        const spinner = document.querySelector('.latest-card-holder > .spinner') as HTMLElement
+    async addReleasing(element:HTMLElement,  status:string){
+      console.log(status)
+      const options:any  = {
+        'RELEASING':() => {
+          element.classList.add('green')
+          element.textContent = status
+        },'FINISHED':() => {
+          element.classList.add('blue')
+          element.textContent = status
+        },'NOT_YET_RELEASED':() => {
+          element.classList.add('red')
+          element.textContent = 'NOT RELEASED'
+        }
+      }
       
-        const data = JSON.parse(window.sessionStorage.getItem('latest') as string) ? 
-                      JSON.parse(window.sessionStorage.getItem('latest') as string) :  await homePage.fetchLatest() ;
+        options[status]();
+      
+    }
+
+    // applyStyleClassesAtStart(){
+    //   const screenWidth = document.documentElement.clientWidth
+    //   console.log(screenWidth)
+    //   const recommended2 = document.querySelector("body > div > div.recommended2.flex")
+    //   const recommended2Details= document.querySelector("body > div > div.recommended2.flex > .details")
+    //   const slideDetails = document.querySelector("body > div > div.slide > div.details") 
+    //   if(screenWidth <=1199){
+    //     recommended2?.classList.add('center')
+    //     recommended2?.classList.add('column')
+    //     recommended2Details?.classList.add('flex')
+    //     recommended2Details?.classList.add('center')
+    //     recommended2Details?.classList.add('column')
+    //     slideDetails?.classList.add('flex')
+    //     slideDetails?.classList.add('center')
+    //     slideDetails?.classList.add('column')
+    //   }
+
+
+
+
+
+    // }
+
+
+
+    async populateCards(){
+        const cardholder = document.querySelector('.carousel') as HTMLDivElement 
+        const spinner = document.querySelector("body > div > div.latest-release > div.carousel-wrapper > div > div") as HTMLElement
+      
+        const data = JSON.parse(window.sessionStorage.getItem('trending') as string) ? 
+                      JSON.parse(window.sessionStorage.getItem('trending') as string) :  await homePage.fetchLatest() ;
         
         const media = data.data !== undefined ?  data.data.Page.media.filter((item: any) => item.idMal!== null) : data.filter((item: any) => item.idMal!== null);
         
-        if(!window.sessionStorage.getItem('latest')){
-          window.sessionStorage.setItem('latest', JSON.stringify(media))
+        if(!window.sessionStorage.getItem('trending')){
+          window.sessionStorage.setItem('trending', JSON.stringify(media))
         }
         homePage.releases.latest = media
         
         if(media){
             spinner.style.display = 'none'
+           
         }
-
-
-        for(let i = 0;i<media.length;++i){
+        homePage.fillCardHolder(cardholder, media)
+        homePage.recommendedFill()
+      };
+       
+    
+      fillCardHolder(cardholder:HTMLElement, media:any[]){
+          for(let i = 0;i<media.length;++i){
             if(media[i].mal === null)continue;
             const div = document.createElement('div')
             const div2= document.createElement('div')
@@ -406,6 +513,9 @@ class HomePage {
             const blur = document.createElement('div')
             const playButton = document.createElement('img')
             const link = document.createElement('a')
+            const releasing = document.createElement('div')
+            releasing.classList.add('releasing')
+            homePage.addReleasing(releasing, media[i].status)
             div.id= `${i}`
             link.id = `${i}`
             link.classList.add('anime-link')
@@ -414,8 +524,9 @@ class HomePage {
             animeImage.classList.add('anime-image')
             blur.classList.add('hover-blur')
             blur.id = `${i}`
-            title.textContent = media[i].title.english ?
-                    media[i].title.english :
+            blur.appendChild(releasing)
+            title.textContent = media[i].title.userPreferred ?
+                    media[i].title.userPreferred :
                     media[i].title.romaji
             div.classList.add('image-holder')
             
@@ -438,15 +549,7 @@ class HomePage {
             }
         }
 
-  
-            
-  
-        
-        homePage.recommededFill()
-      };
-       
-    
-
+      }
     
 
     cleanString(inputString:string) : string {
@@ -461,36 +564,7 @@ class HomePage {
  
     async getMediaById(index: number) {
       console.log(index)
-      // console.log(index)
-      //   const id = homePage.cleanString(homePage.releases.latest[index].id);
-      //   console.log(id)
-      //   // let gogoid = '';
-        
-      //   try {
-      //       const response = await fetch(`http://localhost:3000/meta/anilist/info/21?provider=zoro`, {
-      //           headers: {
-      //               Accept: 'application/json',
-      //               'Content-Type': 'application/json'
-      //           }
-      //       });
-      //       const data = await response.json();
-      //       zoro = data.results[0].id;
-      //       // const releasing = data.status ===
-           
-      //       const episode = gogoid + '-episode-1';
-      //       const stringified = JSON.stringify(episode)
-      //       const x = JSON.stringify(homePage.releases.latest[index]);
-      //       console.log(episode);
-      //       window.sessionStorage.setItem('name', name)
-      //       window.sessionStorage.setItem('fetch-this',stringified)
-      //       const lastWatched = JSON.parse(window.sessionStorage.getItem('last-watched') as string);
-      //       window.sessionStorage.setItem('anime-data', x);
-      //       const url = 'anime-details.html';
-      //       window.location.href = url;
-      //   } catch (error) {
-      //       console.error('Error:', error);
-      //       // Handle errors here
-      //   }
+     
       if(window.sessionStorage.getItem('anime-episode')){
         window.sessionStorage.removeItem('anime-episode')
       }
@@ -514,7 +588,7 @@ class HomePage {
     }
     
     
-     recommededFill(){
+     recommendedFill(){
     
       const arr = homePage.releases.latest ? homePage.releases.latest : JSON.parse(window.sessionStorage.getItem('latest') as string)
       const recommendedDIv = document.querySelector('.recommended2') as HTMLDivElement
@@ -524,7 +598,7 @@ class HomePage {
       const titleDiv = document.querySelector('.recommended2 > .details > .recommended-title') as HTMLDivElement
       const descriptionPara =document.querySelector('.recommended2 > .details > .description') as HTMLParagraphElement
       const watchButton = document.createElement('a')
-      const imageHolder = document.querySelector('.recommended2  > .image-holder') as HTMLDivElement
+      const imageHolder = document.querySelector('.recommended2  > .recommended-image') as HTMLDivElement
       const ratingDiv = document.querySelector('.recommended2 > .details > .rating') as HTMLDivElement 
       const ratingText = document.createTextNode(( arr[randomIndex].averageScore / 10).toString());
       const space  = document.createTextNode(`\u00A0\u00A0 `)
@@ -548,15 +622,15 @@ class HomePage {
       watchButton.id = `${randomIndex}`
       watchButton.addEventListener('click', homePage.fetchById)
       
-      titleDiv.textContent = arr[randomIndex].title.english ? arr[randomIndex].title.english  : arr[randomIndex].title.romaji ;
+      titleDiv.textContent = arr[randomIndex].title.userPreferred ? arr[randomIndex].title.userPreferred  : arr[randomIndex].title.romaji ;
     
-      descriptionPara.innerHTML = arr[randomIndex].description.length < 400 ?arr[randomIndex].description :arr[randomIndex].description.substring(0,400) + '...' 
+      descriptionPara.innerHTML = arr[randomIndex].description.length < 300 ? descriptionPara.innerHTML = arr[randomIndex].description : descriptionPara.innerHTML = arr[randomIndex].description.substring(0,  300) + '...'
       animeImage.src = arr[randomIndex].coverImage.extraLarge ? 
             arr[randomIndex].coverImage.extraLarge :  arr[randomIndex].coverImage.large;
             animeImage.classList.add('anime-image')
       imageHolder.appendChild(animeImage)
-      title.textContent = arr[randomIndex].title.english ?
-       arr[randomIndex].title.english : 
+      title.textContent = arr[randomIndex].title.userPreferred ?
+      arr[randomIndex].title.userPreferred : 
                       arr[randomIndex].title.romaji
 
    
@@ -564,54 +638,16 @@ class HomePage {
 
 
     popularFill(){
-      const media = this.popular.length > 0 ? this.popular : JSON.parse(window.sessionStorage.getItem('recommended') as string)
+      const media = this.popular.length > 0 ? this.popular : JSON.parse(window.sessionStorage.getItem('popular') as string)
 
       console.log(media)
 
-      const spinner = document.querySelector('.popular > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)') as HTMLDivElement
-      const cardholder = document.querySelector('.popular-card-holder') as HTMLDivElement
+      const spinner = document.querySelector("body > div > div.popular > div.carousel-wrapper > div > div") as HTMLDivElement
+      const cardholder = document.querySelector('.carousel.popular') as HTMLDivElement
       if(media){
           spinner.style.display = 'none'
       }
-      for(let i = 0;i<media.length;++i){
-          if(media[i].mal === null)continue;
-          const div = document.createElement('div')
-          const div2= document.createElement('div')
-          const animeImage = document.createElement('img')
-          const title = document.createElement('p')
-          const blur = document.createElement('div')
-          const playButton = document.createElement('img')
-          const link = document.createElement('a')
-          div.setAttribute('data-index',  `${i}`)
-          link.id = `${i}`
-          link.classList.add('anime-link')
-          playButton.src = './images/play-button-icon-white-8.png'
-          link.appendChild(playButton)
-          animeImage.classList.add('anime-image')
-          blur.classList.add('hover-blur')
-          blur.id = `${i}`
-          title.textContent = media[i].title.english ?
-                  media[i].title.english :
-                  media[i].title.romaji
-          div.classList.add('image-holder')
-          div2.classList.add('p-holder')
-          playButton.classList.add('play-button')
-          playButton.id = `${i}`
-          blur.appendChild(link)
-          blur.appendChild(title)
-          animeImage.src = media[i].coverImage.extraLarge ? 
-                  media[i].coverImage.extraLarge :
-                  media[i].coverImage.large
-          div.appendChild(animeImage)
-          div2.appendChild(title)
-          div.appendChild(div2)
-          div.appendChild(blur)
-          cardholder.appendChild(div)
-
-          if(homePage.isOffScreen(div, cardholder.clientWidth)){
-            div.classList.add('off-screen-blur')
-          }
-    }
+      homePage.fillCardHolder(cardholder, media)
   }
 
 
@@ -621,9 +657,7 @@ class HomePage {
         let  index;
         
         const target = e.target as HTMLElement
-
-        console.log( target.closest('.latest-release') !== null,  target.closest('.latest-release'))
-        
+                
         const arr = ['hover-blur', 'image-holder', 'anime-link', 'play-button']
 
         if(arr.indexOf(target.classList[0]) === -1)return;
@@ -673,115 +707,155 @@ class HomePage {
 
 
      scrollLatestCarousel(e:Event){
-      const cardHolder = document.querySelector('.latest-card-holder') as HTMLDivElement
-      const nextButton = document.querySelector('.next-btn1')  as HTMLButtonElement
-      const prevButton = document.querySelector('.prev-btn1')  as HTMLButtonElement
-      const nextSpan = document.querySelector('.latest-next-span')  as HTMLSpanElement
-      const prevSpan = document.querySelector('.latest-prev-span')  as HTMLSpanElement
+      if(homePage.latestIsScrolling)return;
+      homePage.latestIsScrolling = true;
+      const cardHolder = document.querySelector('.carousel') as HTMLDivElement
+      const nextButton = document.querySelector('.carousel-next')  as HTMLButtonElement
+      const prevButton = document.querySelector('.carousel-prev')  as HTMLButtonElement
+      const nextSpan = document.querySelector('.carousel-next-span')  as HTMLSpanElement
+      const prevSpan = document.querySelector('.carousel-prev-span')  as HTMLSpanElement
       const prevButtonDisplay = getComputedStyle(prevButton).display
       const nextButtonDisplay = getComputedStyle(nextButton).display
       const target =  (e.target as HTMLElement)
-      console.log(target)
-      if(target === nextButton || target === nextSpan && prevButtonDisplay === 'none'){
-        prevButton.style.display = 'inline'
-      }
+      const nextArr = [nextButton, nextSpan]
+      const prevArr = [prevButton, prevSpan]
 
-      if(target === prevButton || target === prevSpan && nextButtonDisplay === 'none'){
-        nextButton.style.display = 'inline'
-      }
 
-      const isPrev = target === prevButton || target === prevSpan ? true : false;
-      const imageWidth = (cardHolder.querySelector('.image-holder') as HTMLDivElement).clientWidth
-      const allImages = cardHolder.querySelectorAll('.image-holder')
-      const imagesOnScreen = cardHolder.querySelectorAll('.image-holder:not(.off-screen-blur)').length
-      const gap = 32 * imagesOnScreen
-      const calc = (imageWidth * imagesOnScreen ) + gap 
-      const scrollBy = isPrev ? -calc : calc;
-      cardHolder.scrollLeft+= scrollBy
 
-      if(cardHolder.scrollLeft === 0){
-        prevButton.style.display ='none'
-      }
-      if(cardHolder.scrollWidth - cardHolder.scrollLeft === cardHolder.clientWidth){
-        nextButton.style.display ='none'
-      }
+      if(nextArr.indexOf(target) !== -1  && prevButtonDisplay === 'none'){
+        prevButton.style.display = 'inline';
+        prevSpan.style.display = 'inline';
+     }
 
-      for(let i =0;i<allImages.length;i++){
-        const image = (allImages[i] as HTMLDivElement)
-        if(homePage.isOffScreen(image, cardHolder.clientWidth)){
-            image.classList.add('off-screen-blur')
+      if(prevArr.indexOf(target) !== -1   && nextButtonDisplay === 'none'){
+          nextButton.style.display = 'inline';
+          nextSpan.style.display = 'inline';
         }
-        if(!homePage.isOffScreen(image, cardHolder.clientWidth) && image.classList.contains('off-screen-blur')){
-          image.classList.remove('off-screen-blur')
-        }
+    
+    const isPrev = prevArr.indexOf(target) !== -1  ? true : false;
+    const imageWidth = (cardHolder.querySelector('.image-holder') as HTMLDivElement).clientWidth;
+    const allImages = cardHolder.querySelectorAll('.image-holder');
+    const imagesOnScreen = cardHolder.querySelectorAll('.image-holder:not(.off-screen-blur)').length;
+    const gap = 32 * imagesOnScreen;
+    const calc = (imageWidth * imagesOnScreen) + gap;
+    const transformValue = isPrev ? -calc : calc;
+    if(homePage.limit === 0){
+      homePage.limit =  (allImages[allImages.length-1].getBoundingClientRect().right +32) - cardHolder.clientWidth
+    }
+    console.log(homePage.limit)
+    homePage.latestScrollBy = isPrev
+    ? Math.max(0, homePage.latestScrollBy + transformValue)
+    : Math.min(homePage.latestScrollBy + transformValue, homePage.limit);
+    cardHolder.style.transform = `translateX(-${homePage.latestScrollBy}px)`
+    console.log(homePage.latestScrollBy)
+    
+
+    setTimeout(()=>{for(let i = 0; i < allImages.length; i++){
+      const image = (allImages[i] as HTMLDivElement);
+      if(homePage.isOffScreen(image, cardHolder.clientWidth)){
+          image.classList.add('off-screen-blur');
       }
+      if(!homePage.isOffScreen(image, cardHolder.clientWidth) && image.classList.contains('off-screen-blur')){
+          image.classList.remove('off-screen-blur');
+      }
+      if(!homePage.isOffScreen((allImages[0] as HTMLDivElement), cardHolder.clientWidth)){
+        prevButton.style.display = 'none'
+        prevSpan.style.display = 'none'
+      }
+      if(!homePage.isOffScreen((allImages[allImages.length-1] as HTMLDivElement), cardHolder.clientWidth)){
+        nextButton.style.display = 'none'
+        nextSpan.style.display = 'none'
+      }
+
+  }
+  homePage.latestIsScrolling = false;
+},500)
      }
 
 
      scrollPopularCarousel(e:Event){
-      const cardHolder = document.querySelector('.popular-card-holder') as HTMLDivElement
-      const nextButton = document.querySelector('.next-btn2')  as HTMLButtonElement
-      const prevButton = document.querySelector('.prev-btn2')  as HTMLButtonElement
-      const prevButtonDisplay = getComputedStyle(prevButton).display
-      const nextButtonDisplay = getComputedStyle(nextButton).display
-      const target =  (e.target as HTMLElement)
-      console.log(cardHolder.scrollLeft + cardHolder.clientWidth, cardHolder.scrollWidth)
-      if(target === nextButton && prevButtonDisplay === 'none'){
-        prevButton.style.display = 'inline'
-      }
-
-      if(target === prevButton && nextButtonDisplay === 'none'){
-        nextButton.style.display = 'inline'
-      }
+      if(homePage.popularIsScrolling)return;
+      homePage.popularIsScrolling = true;
+      const cardHolder = document.querySelector('.popular-card-holder') as HTMLDivElement;
+      const nextButton = document.querySelector('.next-btn2')  as HTMLButtonElement;
+      const prevButton = document.querySelector('.prev-btn2')  as HTMLButtonElement;
+      const nextSpan = document.querySelector('.popular-next-span')  as HTMLSpanElement
+      const prevSpan = document.querySelector('.popular-prev-span')  as HTMLSpanElement
+      const prevButtonDisplay = getComputedStyle(prevButton).display;
+      const nextButtonDisplay = getComputedStyle(nextButton).display;
+      const target = (e.target as HTMLElement);
       
-      const isPrev = target === prevButton ? true : false;
-      const imageWidth = (cardHolder.querySelector('.image-holder') as HTMLDivElement).clientWidth
-      const allImages = cardHolder.querySelectorAll('.image-holder')
-      const imagesOnScreen = cardHolder.querySelectorAll('.image-holder:not(.off-screen-blur)').length
-      const gap = 32 * imagesOnScreen
-      const calc = (imageWidth * imagesOnScreen ) + gap 
-      const scrollBy = isPrev ? -calc : calc;
-      cardHolder.scrollLeft+= scrollBy
-      if(cardHolder.scrollLeft === 0){
-        prevButton.style.display ='none'
-      }
-      if(cardHolder.scrollWidth - cardHolder.scrollLeft === cardHolder.clientWidth){
-        nextButton.style.display ='none'
-      }
-      for(let i =0;i<allImages.length;i++){
-        const image = (allImages[i] as HTMLDivElement)
-        if(homePage.isOffScreen(image, cardHolder.clientWidth)){
-            image.classList.add('off-screen-blur')
-        }
-        if(!homePage.isOffScreen(image, cardHolder.clientWidth) && image.classList.contains('off-screen-blur')){
-          image.classList.remove('off-screen-blur')
-        }
-      }
+
+      const nextArr = [nextButton, nextSpan]
+      const prevArr = [prevButton, prevSpan]
+
+
+
+      if(nextArr.indexOf(target) !== -1  && prevButtonDisplay === 'none'){
+        prevButton.style.display = 'inline';
+        prevSpan.style.display = 'inline';
      }
 
+      if(prevArr.indexOf(target) !== -1   && nextButtonDisplay === 'none'){
+          nextButton.style.display = 'inline';
+          nextSpan.style.display = 'inline';
+        }
+    
+    const isPrev = prevArr.indexOf(target) !== -1  ? true : false;
+    const imageWidth = (cardHolder.querySelector('.image-holder') as HTMLDivElement).clientWidth;
+    const allImages = cardHolder.querySelectorAll('.image-holder');
+    const imagesOnScreen = cardHolder.querySelectorAll('.image-holder:not(.off-screen-blur)').length;
+    const gap = 32 * imagesOnScreen;
+    const calc = (imageWidth * imagesOnScreen) + gap;
+    const transformValue = isPrev ? -calc : calc;
+    if(homePage.limit === 0){
+      homePage.limit =  (allImages[allImages.length-1].getBoundingClientRect().right +32) - cardHolder.clientWidth
+    }
+    console.log(homePage.limit)
+    homePage.latestScrollBy = isPrev
+    ? Math.max(0, homePage.latestScrollBy + transformValue)
+    : Math.min(homePage.latestScrollBy + transformValue, homePage.limit);
+    cardHolder.style.transform = `translateX(-${homePage.latestScrollBy}px)`
+    console.log(homePage.latestScrollBy)
+    
 
+    setTimeout(()=>{for(let i = 0; i < allImages.length; i++){
+      const image = (allImages[i] as HTMLDivElement);
+      if(homePage.isOffScreen(image, cardHolder.clientWidth)){
+          image.classList.add('off-screen-blur');
+      }
+      if(!homePage.isOffScreen(image, cardHolder.clientWidth) && image.classList.contains('off-screen-blur')){
+          image.classList.remove('off-screen-blur');
+      }
+      if(!homePage.isOffScreen((allImages[0] as HTMLDivElement), cardHolder.clientWidth)){
+        prevButton.style.display = 'none'
+        prevSpan.style.display = 'none'
+      }
+      if(!homePage.isOffScreen((allImages[allImages.length-1] as HTMLDivElement), cardHolder.clientWidth)){
+        nextButton.style.display = 'none'
+        nextSpan.style.display = 'none'
+      }
+
+  }
+  homePage.popularIsScrolling = false;
+},500)
+  }
+
+    
 
 }
 const homePage = new HomePage()
+// window.addEventListener('load', homePage.applyStyleClassesAtStart)
 homePage.getPopular()
-const nextButton = document.querySelector('.next-btn1') as HTMLButtonElement
-const prevButton = document.querySelector('.prev-btn1') as HTMLButtonElement
-const latestNextSpan = document.querySelector('.latest-next-span') as HTMLSpanElement
-const latestPrevSpan = document.querySelector('.latest-prev-span') as HTMLSpanElement
-const nextButton2 = document.querySelector('.next-btn2') as HTMLButtonElement
-const prevButton2 = document.querySelector('.prev-btn2') as HTMLButtonElement
-nextButton.addEventListener('click', homePage.scrollLatestCarousel)
-prevButton.addEventListener('click', homePage.scrollLatestCarousel)
-latestNextSpan.addEventListener('click', homePage.scrollLatestCarousel)
-latestPrevSpan.addEventListener('click', homePage.scrollLatestCarousel)
-nextButton2.addEventListener('click', homePage.scrollPopularCarousel)
-prevButton2.addEventListener('click', homePage.scrollPopularCarousel)
 homePage.populateCards()
 document.addEventListener('click', homePage.test)
 
 
-const latestCarousel = document.querySelector('.latest-card-holder')  as HTMLDivElement
-latestCarousel.scrollLeft = 0;
-const popularCarousel = document.querySelector('.popular-card-holder')  as HTMLDivElement
-popularCarousel.scrollLeft = 0;
+const carousels: NodeListOf<Element> = document.querySelectorAll('.carousel') 
+if(carousels){
+  carousels.forEach(carousel => {
+    carousel.scrollLeft = 0
+  })
+}
+
 

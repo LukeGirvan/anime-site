@@ -106,11 +106,11 @@ class Watch{
             }
         }else{
             const data = JSON.parse(window.sessionStorage.getItem('anify-data')  as  string)
+            // const gogoEpisodes =  data.gogoepisodes
             const div = document.querySelector('.sub-div') as HTMLDivElement;
             const uri = window.location.href;
             const searchParams = new URLSearchParams(uri.split('?')[1]);
-            const episodes = data.episodes.data[0].providerId === 'gogoanime' ? data.episodes.data[0].episodes :
-            data.episodes.data[1].episodes
+            const episodes = data.gogoepisodes
             const episode = searchParams.get('id') as string
             const dropdown = document.querySelector('#episodes') as HTMLSelectElement;
             const start = episode.split('-');

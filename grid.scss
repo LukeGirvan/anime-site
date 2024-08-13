@@ -1,0 +1,290 @@
+
+:root {
+    --grid-columns: 5;
+  }
+  
+  @media (max-width: 1300px) {
+    :root {
+      --grid-columns: 5;
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    :root {
+      --grid-columns: 4;
+    }
+  }
+  
+  @media (max-width: 900px) {
+    :root {
+      --grid-columns: 3;
+    }
+  }
+  
+  @media (max-width: 700px) {
+    :root {
+      --grid-columns: 2;
+    }
+  }
+  
+  @media (max-width: 478px) {
+    :root {
+      --grid-columns: 1.4;
+    }
+  }
+
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  
+  @keyframes pulse {
+    0% {
+        background-color: #1a1919;
+    }
+    50% {
+        background-color: #292929;
+    }
+    100% {
+        background-color: #1a1919;
+    }
+}
+
+.skeleton {
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.error-div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0; /* Resets any margin that might cause the width to overflow */
+  .error{
+    font-size: 2rem;
+    color: white;
+    padding-bottom: 10rem;
+  }
+}
+
+.skeleton-box {
+  height: 350px;
+  min-width: 100%;
+  // background-color: #898888;
+  border-radius: 6px;
+  animation: pulse 3.5s infinite ease-in-out;
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 1.3rem;
+  // background-color: #898888;
+  margin-top: 0.5rem;
+  animation: pulse 3.5s infinite  ease-in-out;
+}
+
+.skeleton-text.short {
+  width: 60%;
+  margin-bottom: 1rem;
+}
+   
+      .latest-release, .popular{
+        max-width: 100%;
+        .h2-holder{
+          width: 100vw;
+          margin-bottom: 2rem;
+          margin-top: 9rem;
+          h2{
+            display: inline;
+            position: relative;
+            left: 5%;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+            border-bottom: 4px solid white;
+        }
+      }
+      .carousel-wrapper {
+        position: relative;
+        margin-bottom: 4rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .grid{
+          display: grid;
+          grid-template-columns: repeat(var(--grid-columns), 1fr) ;
+          gap: 2rem;
+          width: 90%;
+          align-content: center;
+          justify-content: center;
+          margin-top: 5rem;
+        }
+        .latest-next-span,.latest-prev-span{
+          position: absolute;
+          top: 15%;
+          width: 50px;
+          height: 300px;
+          z-index: 888;
+          border: none;
+          cursor: pointer;
+        }
+        
+            .latest-next-span{
+              right:0;
+            }
+      
+            .latest-prev-span{
+              left:3%;
+            }
+              .prev-btn1, .next-btn1, .prev-btn2, .next-btn2 {
+                position: absolute;
+                top: 35%;
+                width: 25px;
+                height: 25px;
+                z-index: 888;
+                border: none;
+                cursor: pointer;
+                
+            }
+      
+            .prev-btn1, .prev-btn2{
+                display: none;
+                background: url('images/left-arrow.svg');
+                background-repeat: no-repeat;
+                left: 3%;
+            }
+      
+            .next-btn1, .next-btn2 {
+                background: url('images/arrow-next-right-icon.svg');
+                background-repeat: no-repeat;
+                right: 0;
+            }
+                .latest-card-holder, .popular-card-holder {
+                    position: relative;
+                    display: grid;
+                    grid-auto-flow: column;
+                    grid-auto-columns: calc(100%/var(--grid-columns));
+                    grid-template-rows: repeat(1,  auto);
+                    gap: 2rem;
+                    overflow-x: hidden;
+                    left: 5%;
+                    padding-right: 8rem;
+                }
+                
+                  
+                  .off-screen-blur{
+                    opacity: .2;
+                  }
+                  
+                
+                  .image-holder {
+                    animation: 0.5s ease-in-out 0s 1 normal none running slideUp;
+
+                    white-space: wrap;
+                    overflow: hidden;
+                    position: relative;
+                    
+                    font-size: 1.3rem;
+                    text-decoration: underline;
+                    
+                   .p-holder{
+                    margin-top: .5rem;
+                    p{
+                      margin-top: 0;
+                      margin-bottom: 1rem;
+                      max-width: 100%;
+                      text-overflow: ellipsis;
+                      white-space: nowrap;
+                      overflow: hidden;
+                    }
+                   }
+                    .anime-image {
+
+                      height: 350px;
+                      min-width: 100%;
+                      // border-radius: 6px;
+              
+                      transition: transform 0.3s ease;
+                    }
+                  
+                 
+                  .hover-blur:hover{
+                    opacity: 1;
+                    
+                  }
+                  
+              }
+      }
+
+    }
+.dropdown-div{
+  width: 90%;
+  display: flex;
+  // flex-direction: column;
+  font-size: 1.4rem;
+  #episodes{
+    max-width: 100px;
+  }
+}
+.meta-data{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.rating-div{
+  color: rgb(255, 226, 62);
+}
+.load-more{
+
+    visibility: hidden;
+    margin-top: 4rem;
+ 
+}
+
+
+.fa-solid.fa-circle{
+  font-size: .9rem;
+  padding-right: .3rem;
+}
+
+
+.pagination{
+  display: none;
+  white-space: 1rem;
+  padding: 3rem;
+} 
+.pagination a.active {
+  background-color: dodgerblue;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+  
+}
+.pagination a:hover {
+cursor: pointer;  
+}
+.pagination a {
+  color: rgb(255, 255, 255);
+  background-color: rgb(109, 109, 109);;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  margin: .8rem;
+  border-radius: 5px;
+}

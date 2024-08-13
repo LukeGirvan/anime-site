@@ -26,10 +26,16 @@
                 <h1 class="zanime">zAnime</h1>
             </div>
            <div class="nav-button-holder flex">
+            <div class="genres-holder hide">
+                <div class="genres">
+                        
+
+                </div>
+            </div>
            <ul id='list-of-links' class='list-of-links flex'>
                 <li><span  aria-hidden='true' class="home-button">Home</span> </li>
                 <li><span aria-hidden='true' class="genre-button">Genre</span></li>
-                <li><span aria-hidden='true'class="latest-button">Latest</span> </li>
+                <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
                 <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
                 <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
             </ul>
@@ -37,7 +43,8 @@
 
 
             <div class="search-bar">
-                <input type="text" name="" class="search-input"  placeholder='Search...'  />
+                <i class="fas fa-search"></i>
+                <input type="text" name="" class="search-input hidden"  placeholder='Search...'  />
                 <div class="search-results">
                     
                 </div>
@@ -63,6 +70,7 @@
                     <h2 class="anime-title"></h2>
                     <p  class="other-title"></p>
                     <p class="rating"> </p>
+                    <p  class="status"></p>
                     <div class="button-holder">
                         <span><a  class="btn"><img src="images/triangular-play-button-svgrepo-com.svg" alt="play triangle" class="play-triangle">Watch Now</a>
                         </span>
@@ -107,20 +115,24 @@
                 
             </div>
                 
-                <div class="latest-release">
+                <div class="recommended-anime">
                     <div class="h2-holder">
                         <h2>Recommended Anime</h2>
                     </div>
                     
                     <div class="carousel-wrapper">
-                        <span class="latest-prev-span"><button class="prev-btn1"></button></span>
-                        <div class="latest-card-holder">
+                        <span class="carousel-prev-span"><button class="carousel-prev"></button></span>
+                        <div class="carousel">
                            <div class="spinner"></div>
                         </div>
-                        <span class="latest-next-span"><button class="next-btn1"></button></span>
+                        <span class="carousel-next-span"><button class="carousel-next"></button></span>
                     </div>
                     
                   
+            </div>
+            <div class="footer">
+                <span class="copyright">&copy;</span> <span class="zanime">Zanime</span>
+                <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"><img src="images/icons8-linkedin-96.png" alt="" class="linkedin-logo"></div>
             </div>
         </div>
        
