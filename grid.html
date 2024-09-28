@@ -21,16 +21,17 @@
             <div class="logo-holder">
             <h1 class="zanime">zAnime</h1>
             </div>
-           <div class="nav-button-holder flex">
+           <div class="nav-button-holder">
             <div class="genres-holder">
                 <div class="genres">
                         
 
                 </div>
             </div>
-           <ul id='list-of-links' class='list-of-links flex'>
+           <ul id='list-of-links' class='list-of-links'>
                 <li><span  aria-hidden='true' class="home-button">Home</span> </li>
-                <li><span aria-hidden='true' class="genre-button">Genre</span></li>
+                <li><span aria-hidden='true' class="genre-button">Genre</span><img src="images/icons8-sort-down-50.png" alt="down arrow" class="down-arrow">
+                    </li>
                 <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
                 <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
                 <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
@@ -39,24 +40,42 @@
 
      
             <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" name="" class="search-input hidden"  placeholder='Search...'  />
-                <div class="search-results">
-                    
-                </div>
+                <form class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="search" class="search-input hidden" placeholder="Search..." />
+                    <div class="search-results"></div>
+                </form>
             </div>
+            
             <button class='mobile-nav-toggle' aria-controls='list-of-links' aria-expanded='false' >
               <span class="sr-only">Menu</span>
             </button>
 
 
         </div>
-        <div class="latest-release">
+        <div class="background-blur"></div>
+        <div class="sidebar off-screen">
+            <ul id='list-of-links' class='list-of-links'>
+                <li><span  aria-hidden='true' class="home-button">Home</span> </li>
+                <li class="genre-button"><span aria-hidden='true'class="genre-button"></span>Genre</span><img src="images/icons8-sort-down-50.png" alt="down arrow" class="down-arrow">
+                    <ul class="genre-list hidden">
+                        
+                    </ul>
+                </li>
+                <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
+                <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
+                <li><form class="mobile-search-form" >
+                    
+                    <input type="text" name="search" class="mobile-search" placeholder="Search..." />
+                    
+                </form></li>
+            </ul>
+        </div>
             <div class="h2-holder">
-                <h2>Popular All Time</h2>
+                <h2></h2>
             </div>
             
-            <div class="carousel-wrapper">
+            
                 <div class="dropdown-div">Sort  &nbsp;<select name="" id="episodes">
                     <option value="popular">Views</option>
                     <option value="title-desc">Title Descending (Z-A)</option>
@@ -66,138 +85,186 @@
                 
                 </div>
                 
-                <div class="grid">
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                <div class="grid-wrapper">
+                    <div class="grid">
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
-                    </div><div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
                         </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                        <div class="image-holder skeleton">
+                            <div class="anime-image skeleton box"></div>
+                            <div class="p-holder">
+                                <div class="skeleton text"></div>
+                                <div class="skeleton text short"></div>
+                            </div>
+                        </div>
+                       <!-- <div class="spinner"></div> -->
+    
                     </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                    <div class="image-holder skeleton">
-                        <div class="anime-image skeleton-box"></div>
-                        <div class="p-holder">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text short"></div>
-                        </div>
-                    </div>
-                   <!-- <div class="spinner"></div> -->
-
                 </div>
                 <div class="pagination">
                    <a  class="page-link active">1</a>
@@ -213,14 +280,11 @@
                   
                 </div>
             </div>
-            <footer class="footer">
-                <span class="copyright">&copy;</span> <span class="zanime">Zanime</span>
-                <div class="logos">
-                    <img src="images/github-mark-white.png" alt="GitHub logo" class="github-logo">
-                    <img src="images/icons8-linkedin-96.png" alt="LinkedIn logo" class="linkedin-logo">
-                </div>
-            </footer>
+            <div class="footer">
+                <span class="zanime">&copy;Zanime</span>
+               <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"></div>
+           </div>
             
-        </div>
+        
 </body>
 </html>

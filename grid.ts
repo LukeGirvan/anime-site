@@ -164,7 +164,7 @@ class  Grid{
       const response = await fetch(url, options);
       const data = await response.json();
       console.log(data);
-      return data.data.Page.media;
+      return data.data;
     }
     
 
@@ -212,21 +212,26 @@ class  Grid{
 
 
 
-      skeletons(){
-        const cardholder = document.querySelector('.grid') as HTMLDivElement
-        for(let i =0;i<20;i++){
-          const skeletonBox = document.createElement('div')
+      // skeletons(){
         
-          const skeletonText = document.createElement('div')
-          skeletonBox.classList.add('skeleton-box')
-          skeletonBox.classList.add('skeleton')
+      //   console.log('running  skeleton')
+      //   const cardholder = document.querySelector('.grid') as HTMLDivElement
+      //   console.log(cardholder)
+      //   for(let i =0;i<20;i++){
+      //     const skeletonBox = document.createElement('div')
+        
+      //     const skeletonText = document.createElement('div')
+      //     skeletonBox.classList.add('skeleton')
+      //     skeletonBox.classList.add('box')
           
-          skeletonText.classList.add('skeleton-text')
-          skeletonText.classList.add('skeleton')
-          skeletonBox.appendChild(skeletonText)
-          cardholder.appendChild(skeletonBox)
-        }
-      }
+          
+      //     skeletonText.classList.add('skeleton')
+      //     skeletonText.classList.add('text')
+      //     skeletonBox.appendChild(skeletonText)
+      //     cardholder.appendChild(skeletonBox)
+      //   }
+
+      // }
 
 
       async addReleasing(element:HTMLElement,  status:string){
@@ -263,9 +268,116 @@ class  Grid{
       }
 
 
+      async queryAnilist(query:string){
+        const x = `
+        query ($searchTerm: String) {
+          Page(page: 1, perPage: 25) {
+              pageInfo{
+                  hasNextPage 
+                  lastPage
+                }
+            media(search: $searchTerm, type: ANIME) {
+              startDate {
+                year
+                month
+                day
+              }
+              id
+              idMal
+              title {
+                romaji
+                english
+                userPreferred
+              }
+              coverImage {
+                extraLarge
+              }
+              bannerImage
+              averageScore
+              description
+              episodes
+              type
+              status
+              nextAiringEpisode {
+                airingAt
+                timeUntilAiring
+                episode
+              }
+              relations {
+                edges {
+                  relationType 
+                    node {
+                      id
+                      title {
+                        romaji
+                        english
+                        userPreferred
+                      }
+                      coverImage {
+                        extraLarge
+                        large
+                      }
+                    }
+                }
+              }
+              format
+              popularity
+              recommendations {
+                edges {
+                  node {
+                    id
+                    mediaRecommendation {
+                      id
+                      title {
+                        romaji
+                        english
+                        userPreferred
+                      }
+                      coverImage {
+                        extraLarge
+                        large
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }      
+        `;
+      
+        const url = 'https://graphql.anilist.co';
+      
+  
+          const variables = {
+              searchTerm: query
+          }
+  
+          console.log(variables)
+  
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(
+              {  
+                  query:x, 
+              variables:variables 
+          }
+          )
+        };
+        const response = await fetch(url, options)
+        const data = await  response.json()
+        // console.log(data.data.Page.media)
+        return data.data
+      }
+
+
+
     async populateCards(){
         let data
-        
+        let nextPageCheck;
         const cardholder = document.querySelector('.grid') as HTMLDivElement
         // if(!cardholder.querySelector('.image-holder')){
         //   grid.page =1
@@ -279,11 +391,16 @@ class  Grid{
         // }
         const sortBy = JSON.parse(window.sessionStorage.getItem('sort-by') as string)
         const genre =  JSON.parse(window.sessionStorage.getItem('grid-genre') as string)
-
+        const queryForSearch = JSON.parse(window.sessionStorage.getItem('search-query') as string)
         const pageNum = grid.page 
 
-        if(!genre &&    pageNum === 1){
+        if(!genre &&    pageNum === 1 && !queryForSearch){
           data = JSON.parse( window.sessionStorage.getItem(`${sortBy}`) as string)
+        }
+        else if(queryForSearch){
+          nextPageCheck = await grid.queryAnilist(queryForSearch)
+          data = nextPageCheck.Page.media
+        
         }
         else if(genre && window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`)){
           data = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`)as string)
@@ -294,32 +411,25 @@ class  Grid{
           console.log('cached')
         }
         else{
-          data = await grid.queryForType(pageNum)
+          nextPageCheck = await grid.queryForType(pageNum)
+          data = nextPageCheck.Page.media
         }
         const gridDiv =document.querySelector('.grid') as HTMLDivElement
 
         console.log(data.length)
-        if(data.length <= 0){
-          while (gridDiv.firstChild) {
-            gridDiv.removeChild(gridDiv.firstChild);
-        }
-          return grid.errorMessage();
-        }
+        
+
+
         for(let i =0;i<data.length;i++){
           grid.gridItems.push(data[i])
         }
         console.log(data)
-        const spinner = document.querySelector('.grid > .spinner') as HTMLDivElement
+       
         const media = data.data !== undefined ?  data.data.Page.media.filter((item: any) => item.idMal!== null) : data.filter((item: any) => item.idMal!== null);
-        if(media){
-            // spinner.style.display = 'none'
-            while (gridDiv.firstChild) {
-              gridDiv.removeChild(gridDiv.firstChild);
-          }
-        }
+        
         
         grid.fillCardHolder(cardholder, media)
-        
+       
         const dropDown = document.querySelector('#episodes') as  HTMLSelectElement
         const pagination = document.querySelector('.pagination') as  HTMLDivElement
         
@@ -445,6 +555,13 @@ class  Grid{
           cardholder.appendChild(div)
 
       }
+      const skeletons = document.querySelectorAll('.skeleton') as NodeListOf<HTMLElement>
+      console.log(skeletons)
+      if(media.length > 0){
+        skeletons.forEach((skeleton) =>{
+          skeleton.remove()
+        })
+    }
       media.forEach((element:GridItem) => {
         grid.titles.push(element.title.userPreferred)
       });
@@ -582,11 +699,24 @@ class  Grid{
     }
 
 
-
+    h2fill(){
+      const h2 = document.querySelector('.h2-holder > h2') as HTMLHeadingElement
+      const genre =  JSON.parse(window.sessionStorage.getItem('grid-genre') as string)
+      const sortBy = JSON.parse(window.sessionStorage.getItem('sort-by') as string)
+      const searchTerm = JSON.parse(window.sessionStorage.getItem('search-query') as string)
+      if( genre){
+        h2.textContent = genre
+      } else if(searchTerm){
+        h2.textContent = 'Results'
+      }
+      else{
+        h2.textContent = sortBy.charAt(0).toUpperCase() + sortBy.slice(1);
+      }
+    }
 
 }
 
 const grid = new Grid()
-// window.addEventListener('load', grid.skeletons)
+window.addEventListener('load', grid.h2fill)
 window.addEventListener('load',  grid.populateCards)
 // grid.getGenres().then(genres => grid.populateDropdown(genres));

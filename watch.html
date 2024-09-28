@@ -24,14 +24,14 @@
             <div class="logo-holder">
                 <h1 class="zanime">zAnime</h1>
             </div>
-           <div class="nav-button-holder flex">
-            <div class="genres-holder hide">
+           <div class="nav-button-holder">
+            <div class="genres-holder">
                 <div class="genres">
                         
 
                 </div>
             </div>
-           <ul id='list-of-links' class='list-of-links flex'>
+           <ul id='list-of-links' class='list-of-links'>
                 <li><span  aria-hidden='true' class="home-button">Home</span> </li>
                 <li><span aria-hidden='true' class="genre-button">Genre</span></li>
                 <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
@@ -54,17 +54,29 @@
 
 
         </div>
+        <div class="background-blur"></div>
+        <div class="sidebar off-screen">
+            <ul id='list-of-links' class='list-of-links'>
+                <li><span  aria-hidden='true' class="home-button">Home</span> </li>
+                <li class="genre-button"><span aria-hidden='true'class="genre-button"></span>Genre</span><img src="images/icons8-sort-down-50.png" alt="down arrow" class="down-arrow">
+                    <ul class="genre-list hidden">
+                        
+                    </ul>
+                </li>
+                <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
+                <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
+                <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
+            </ul>
+        </div>
+
+
+
     <div class="video-container">
         <div class="spinner"></div>
-        <!-- <div class="skeleton-video"></div>  -->
-        <!-- <div class="placeholder"></div> -->
-        <div class="artplayer-app">
-            <video src="" id="my_video_1" controls ></video>
-        </div>
+        <iframe src="" frameborder="0" class="trailer"></iframe>
+       
     </div> 
-    <!-- <div class="choose-server">
-        <a class="zoro btn" >zoro</a>
-    </div> -->
+    
 
     <div class="episode-holder">
         <div class="title-holder">
@@ -81,9 +93,9 @@
     </div>
         <div id="disqus_thread"></div>
         <div class="footer">
-            <span class="copyright">&copy;</span> <span class="zanime">Zanime</span>
-            <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"><img src="images/icons8-linkedin-96.png" alt="" class="linkedin-logo"></div>
-        </div>
+            <span class="zanime">&copy;Zanime</span>
+           <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"></div>
+       </div>
 <script>
     /**
      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT 

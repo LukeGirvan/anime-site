@@ -232,7 +232,6 @@
                 @include
                 center-flex-column;
                 padding: 1rem;
-                padding-top: 5rem;
                 
                 width: 50%;
                 .anime-title{
@@ -241,6 +240,7 @@
                 }
                 p{
                     font-size: 1.2rem;
+                    text-align: center;
                 }
                 .button-holder{
                     display: flex;
@@ -294,76 +294,32 @@
     .details2{
        @include
        center-flex-column;
-       justify-content: flex-start;
-       align-items: start;
         position: relative;
         margin: 4rem 0rem;
-        left:5%;
         .description-div{
             position: relative;
-        
-            
-            font-size: 1.3rem;
+            text-align: center;
             max-width: 90%;
         }
         .side-div{
             position: relative;
             // @include
             // center-flex-column;
-            max-width: 90%;
+            width: 90%;
             .studio-div, .genre-div, .airing-div, .type-div{
                 position: relative;
                 font-size: 1.2rem;
                 max-width: 98%;
                 margin-bottom: 2rem;
                 width: 100%;
-                
+                text-align: center;
             }
     
         }
     
     }
     
-    .episode-holder{
-        @include
-        center-flex-column;
-        .title-holder{
-            max-width: 900px;
-            
-            h3{
-                display: inline;
-                padding-right: .4rem;
-            }
-        }
-        .sub-div{
-            width: 90%;
-            @include
-            center-flex-row;
-            flex-wrap: wrap;
-            .episode-button{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: #222222;
-                color: rgb(154, 154, 154);
-                padding: .6rem 1.2rem;
-                border: none;
-                border-radius: 5px;
-                margin: 1rem;
-               width:44px;
-            }
-            .episode-button:hover{
-                cursor: pointer;
-                background-color: #434242;
-            }
-            .episode-button.current{
-           
-                    background-color: white;
-                    color: rgb(0, 0, 0);
-                
-            }
-        }
-    }
+    
 }
 .latest-release{
     margin-top: 5rem;

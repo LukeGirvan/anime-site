@@ -70,6 +70,8 @@ class AnimeDetails{
       console.log(data.data)
       const description = document.querySelector('.description-div')  as HTMLDivElement
       description.innerHTML = data.data.synopsis
+      const trailer = JSON.stringify(data.data.trailer.embed_url )
+       window.sessionStorage.setItem('trailer', trailer)
     }
 
     async fetchAnilist(){
@@ -421,21 +423,17 @@ class AnimeDetails{
         if(clear){
             window.sessionStorage.removeItem('anime-episode')
         }
-        loadingBar.classList.add('loading')
-        loadingBar.style.display = 'block';
+        
         
         const id = (e.target as HTMLAnchorElement).id
        
         const encodedId = encodeURIComponent(id);
 
         window.sessionStorage.setItem('episode', JSON.stringify(id))
-        loadingBar.classList.remove('loading')
-        loadingBar.classList.add('loaded')
+     
 
 
-        if (loadingBar) {
-            loadingBar.style.display = 'none';
-        }
+      
         window.location.href = 'watch.html?id=' + encodedId;
     }
     

@@ -37,8 +37,6 @@ class Global {
             let latestIsScrolling = false;
             let latestScrollBy = 0;
             let limit = 0;
-            let isDown = false;
-            let startX, scrollLeft;
             const isOffScreen = (element, containerWidth) => {
                 return element.getBoundingClientRect().left <= 0 ||
                     element.getBoundingClientRect().right >= containerWidth ||
@@ -51,15 +49,15 @@ class Global {
                 const target = e.target;
                 const nextArr = [nextButton, nextSpan];
                 const prevArr = [prevButton, prevSpan];
-                const prevButtonDisplay = getComputedStyle(prevButton).display;
-                const nextButtonDisplay = getComputedStyle(nextButton).display;
-                if (nextArr.includes(target) && prevButtonDisplay === 'none') {
-                    prevButton.style.display = 'inline';
-                    prevSpan.style.display = 'inline';
+                const prevSpanDisplay = getComputedStyle(prevSpan).display;
+                const nextSpanDisplay = getComputedStyle(nextSpan).display;
+                if (nextArr.includes(target) && prevSpanDisplay === 'none') {
+                    prevSpan.classList.toggle('show');
+                    prevSpan.classList.toggle('hide');
                 }
-                if (prevArr.includes(target) && nextButtonDisplay === 'none') {
-                    nextButton.style.display = 'inline';
-                    nextSpan.style.display = 'inline';
+                if (prevArr.includes(target) && nextSpanDisplay === 'none') {
+                    nextSpan.classList.toggle('show');
+                    nextSpan.classList.toggle('hide');
                 }
                 const isPrev = prevArr.includes(target);
                 const imageWidth = carousel.querySelector('.image-holder').clientWidth;
@@ -95,30 +93,27 @@ class Global {
                     latestIsScrolling = false;
                 }, 500);
             };
-            const touchStart = (e) => {
-                isDown = true;
-                startX = e.touches[0].pageX - carousel.offsetLeft;
-                scrollLeft = carousel.scrollLeft;
-            };
-            const touchMove = (e) => {
-                if (!isDown)
-                    return;
-                e.preventDefault();
-                const x = e.touches[0].pageX - carousel.offsetLeft;
-                const walk = (x - startX) * 1; // Adjust the multiplier for faster/slower scroll
-                carousel.scrollLeft = scrollLeft - walk;
-            };
-            const touchEnd = () => {
-                isDown = false;
-            };
+            // const phoneScroll = (e:Event) => {
+            //   const width  = document.documentElement.clientWidth
+            //   const imagesOnScreen = carousel.querySelectorAll('.image-holder:not(.off-screen-blur)').length;
+            //   const allImages = carousel.querySelectorAll('.image-holder') as NodeListOf<HTMLDivElement>;
+            //   allImages.forEach(image => {
+            //     if (isOffScreen(image, carousel.clientWidth) &&  !image.classList.contains('off-screen-blur')) {
+            //       image.classList.add('off-screen-blur');
+            //     } else if (image.classList.contains('off-screen-blur') && !isOffScreen(image, carousel.clientWidth)) {
+            //       image.classList.remove('off-screen-blur');
+            //     }
+            //   })
+            // }
             nextButton.addEventListener('click', scrollCarousel);
             prevButton.addEventListener('click', scrollCarousel);
             nextSpan.addEventListener('click', scrollCarousel);
             prevSpan.addEventListener('click', scrollCarousel);
-            carousel.addEventListener('touchstart', touchStart);
-            carousel.addEventListener('touchmove', touchMove);
-            carousel.addEventListener('touchend', touchEnd);
-            carousel.addEventListener('touchcancel', touchEnd);
+            // carousel.addEventListener('scroll', phoneScroll)
+            // carousel.addEventListener('touchstart', touchStart);
+            // carousel.addEventListener('touchmove', touchMove);
+            // carousel.addEventListener('touchend', touchEnd);
+            // carousel.addEventListener('touchcancel', touchEnd);
         });
     }
     getGenres() {
@@ -141,9 +136,7 @@ class Global {
             const response = yield fetch(url, options);
             const data = yield response.json();
             console.log(data.data);
-            // window.sessionStorage.setItem('genres', JSON.stringify(data.data.GenreCollection))
             return data.data.GenreCollection;
-            // return data.data.Page.media
         });
     }
     genreClick(e) {
@@ -172,6 +165,19 @@ class Global {
             yield globalScript.fetchById(Number(index));
         });
     }
+    formSubmit(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        console.log(e);
+        if (e.target.classList[0] !== 'mobile-search-form'
+            && e.target.classList[0] !== 'search-bar') {
+            return;
+        }
+        const query = e.target.querySelector('input').value;
+        console.log(query);
+        window.sessionStorage.setItem('search-query', JSON.stringify(query));
+        window.location.href = 'grid.html';
+    }
     makeSearchBarBig(e) {
         const searchButton = e.target;
         console.log(searchButton);
@@ -185,11 +191,11 @@ class Global {
     }
     makeSearchBarSmall(e) {
         const target = e.target;
-        console.log(target.classList[0] !== 'search-input' && target.classList[0] !== 'result' && !globalScript.resultsDisplayed && input.classList.contains('visible'));
+        console.log(target.classList[0] !== 'search-input' && target.classList[0] !== 'result' && !globalScript.resultsDisplayed && desktopInput.classList.contains('visible'));
         console.log(target.classList[0] !== 'search-input' && target.classList[0] !== 'result' && globalScript.resultsDisplayed);
         const searchButton = document.querySelector('.fas.fa-search');
         if (target.classList[0] !== 'search-input' && target.classList[0] !== 'fas'
-            && target.classList[0] !== 'result' && !globalScript.resultsDisplayed && input.classList.contains('visible')) {
+            && target.classList[0] !== 'result' && !globalScript.resultsDisplayed && desktopInput.classList.contains('visible')) {
             const searchResultDiv = document.querySelector('.search-results');
             const input = document.querySelector('.search-input');
             searchResultDiv.classList.remove('active');
@@ -197,6 +203,7 @@ class Global {
                 searchResultDiv.removeChild(searchResultDiv.firstChild);
             }
             console.log(e);
+            input.style.width = '220px';
             input.classList.remove('visible');
             input.classList.add('hidden');
             searchButton.classList.remove('hidden');
@@ -244,9 +251,7 @@ class Global {
         this.lastQuery = query;
     }
     cleanString(inputString) {
-        // Replace all spaces with hyphens
         let cleanedString = inputString.replace(/\s+/g, '-');
-        // Remove all special characters except hyphens
         cleanedString = cleanedString.replace(/[^\w-]/g, '-');
         return cleanedString.toLowerCase();
     }
@@ -254,7 +259,7 @@ class Global {
         return __awaiter(this, void 0, void 0, function* () {
             const x = `
       query ($searchTerm: String) {
-        Page(page: 1, perPage: 10) {
+        Page(page: 1, perPage: 25) {
           media(search: $searchTerm, type: ANIME) {
             id
             idMal
@@ -369,15 +374,12 @@ class Global {
     }
     toggleMobileMenu(e) {
         const target = e.target;
-        const navHolder = document.querySelector('.nav-button-holder');
-        if (target.classList.contains('mobile-nav-toggle') && !target.classList.contains('toggled')) {
-            target.classList.add('toggled');
-            navHolder.classList.add('toggled');
-        }
-        else {
-            target.classList.remove('toggled');
-            navHolder.classList.remove('toggled');
-        }
+        const navHolder = document.querySelector('.sidebar');
+        const backgroundBlur = document.querySelector('.background-blur');
+        document.body.classList.toggle('scroll-block');
+        target.classList.toggle('toggled');
+        navHolder.classList.toggle('off-screen');
+        backgroundBlur.classList.toggle('active');
     }
     fetchById(index) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -440,6 +442,13 @@ class Global {
             },
             'genre-button': () => {
                 const genreDropdown = document.querySelector('.genres-holder');
+                // genreDropdown.classList.toggle('hidden')
+                genreDropdown.classList.toggle('show');
+                // lobalScript.displayGenres()g
+            },
+            'down-arrow': () => {
+                const genreDropdown = document.querySelector('.genres-holder');
+                // genreDropdown.classList.toggle('hidden')
                 genreDropdown.classList.toggle('show');
                 // lobalScript.displayGenres()g
             },
@@ -468,19 +477,27 @@ class Global {
             }
             console.log(genres);
             const genreDropdown = document.querySelector('.genres-holder > .genres');
-            const nsfwGenre = ['Hentai'];
-            const filteredGenres = genres.filter((genre) => genre !== 'hentai');
+            const mobileDropDown = document.querySelector('.sidebar >.list-of-links > li > .genre-list');
+            const nsfwGenre = 'Hentai';
+            const filteredGenres = genres.filter((genre) => genre !== 'Hentai');
             for (let i = 0; i < 15; i++) {
                 const genre = filteredGenres[i];
                 const genreAnchor = document.createElement('a');
                 genreAnchor.textContent = genre;
                 genreDropdown.appendChild(genreAnchor);
             }
+            for (let i = 0; i < 15; i++) {
+                const genre = filteredGenres[i];
+                const listItem = document.createElement('li');
+                listItem.textContent = genre;
+                mobileDropDown.appendChild(listItem);
+            }
         });
     }
     clearGridStorage() {
         const genre = JSON.parse(window.sessionStorage.getItem('grid-genre'));
         const sortBy = JSON.parse(window.sessionStorage.getItem('sort-by'));
+        const searchQuery = JSON.parse(window.sessionStorage.getItem('search-query'));
         for (let i = 1; i < 11; i++) {
             if (window.sessionStorage.getItem(`page-${i}-data-${genre}`)) {
                 window.sessionStorage.removeItem(`page-${i}-data-${genre}`);
@@ -498,28 +515,79 @@ class Global {
         if (window.sessionStorage.getItem('page-num')) {
             window.sessionStorage.removeItem('page-num');
         }
+        if (window.sessionStorage.getItem('search-query')) {
+            window.sessionStorage.removeItem('search-query');
+        }
     }
     goHome() {
         globalScript.clearGridStorage();
-        window.location.href = 'http://127.0.0.1:5500/index.html';
+        window.location.href = 'index.html';
+    }
+    mobileListener(e) {
+        const target = e.target;
+        const actionKey = target.classList[0];
+        const actions = {
+            'home-button': () => {
+                globalScript.clearGridStorage();
+                globalScript.goHome();
+            },
+            'popular-button': () => {
+                const sortOption = JSON.stringify('popular');
+                globalScript.clearGridStorage();
+                window.sessionStorage.setItem('sort-by', sortOption);
+                window.location.href = 'grid.html';
+            },
+            'genre-button': () => {
+                const genreDropdown = document.querySelector('#list-of-links > li.genre-button > ul');
+                genreDropdown.classList.toggle('hidden');
+                genreDropdown.classList.toggle('active');
+                // lobalScript.displayGenres()g
+            }, 'down-arrow': () => {
+                const genreDropdown = document.querySelector('#list-of-links > li.genre-button > ul');
+                genreDropdown.classList.toggle('hidden');
+                genreDropdown.classList.toggle('active');
+                // lobalScript.displayGenres()g
+            },
+            'latest-button': () => {
+                const sortOption = JSON.stringify('trending');
+                globalScript.clearGridStorage();
+                window.sessionStorage.setItem('sort-by', sortOption);
+                window.location.href = 'grid.html';
+            }
+        };
+        const executeAction = (actionKey) => {
+            if (actions[actionKey]) {
+                actions[actionKey]();
+            }
+            else {
+                // console.log(`No action found for key: ${actionKey}`);
+            }
+        };
+        executeAction(actionKey);
     }
 }
 const globalScript = new Global();
 const mobileNavbutton = document.querySelector('.mobile-nav-toggle');
 const searchButton = document.querySelector(".fas.fa-search");
-const input = document.querySelector('.search-input');
+const desktopInput = document.querySelector('.search-input');
+const desktopInputForm = document.querySelector('.search-bar');
+const mobileInputForm = document.querySelector('.mobile-search-form');
 const h1 = document.querySelector('.zanime');
 const navBar = document.querySelector('.nav-bar');
 const searchResultDiv = document.querySelector('.search-results');
 const genreDropdown = document.querySelector('.genres-holder > .genres');
+const sideBar = document.querySelector('.sideBar');
+const mobileGenreDropdown = document.querySelector('#list-of-links > li.genre-button > ul');
 genreDropdown.addEventListener('click', globalScript.genreClick);
-// const genreButton = document.querySelector('.genre-button') as HTMLSpanElement
-// genreButton.addEventListener('mouse')
+mobileGenreDropdown.addEventListener('click', globalScript.genreClick);
+document.addEventListener('click', globalScript.mobileListener);
 globalScript.getGenres();
 h1.addEventListener('click', globalScript.goHome);
 searchButton.addEventListener('click', globalScript.makeSearchBarBig);
+desktopInputForm.addEventListener('submit', globalScript.formSubmit);
+mobileInputForm.addEventListener('submit', globalScript.formSubmit);
 document.addEventListener('click', globalScript.makeSearchBarSmall);
-input.addEventListener('input', globalScript.getSearchResults);
+desktopInput.addEventListener('input', globalScript.getSearchResults);
 mobileNavbutton.addEventListener('click', globalScript.toggleMobileMenu);
 searchResultDiv.addEventListener('click', globalScript.resultClick);
 navBar.addEventListener('click', globalScript.navBarListener);

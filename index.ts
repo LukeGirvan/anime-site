@@ -12,7 +12,6 @@ class HomePage {
     firstOffScreen:number;
     latestScrollBy:number;
     popularScrollBy:number;
-    popular: any;
     images: any[];
     queryTimer: any;
     queryData: any[];
@@ -39,9 +38,9 @@ class HomePage {
         this.queryData = [];
         this.lastQuery = '';
         this.releases ={
-            latest:[]
+            trending:[],
+            popular:[]
         }
-        this.popular = []
         this.timer = null;
         this.animeData = {
 
@@ -51,6 +50,7 @@ class HomePage {
 
     async fetchById(e:Event){
       const target  = e.target as HTMLElement
+      const type = (e.target as HTMLElement).dataset?.type
       console.log(target.id)
       const index = (e.target as HTMLElement).id
 
@@ -70,7 +70,8 @@ class HomePage {
         window.sessionStorage.removeItem('episode-data')
       }
 
-      const animeDetails =JSON.stringify( homePage.popular[Number(index)])
+      const arr = type === 'popular' ? homePage.releases.popular[Number(index)] :homePage.releases.trending[Number(index)]
+      const animeDetails =JSON.stringify(arr )
       window.sessionStorage.setItem('anime-data',  animeDetails)
       const url = 'anime-details.html';
       window.location.href = url;
@@ -247,15 +248,16 @@ class HomePage {
         window.sessionStorage.setItem('popular', JSON.stringify(response));
       }
       console.log(response)
-      this.popular = response
-      
+      homePage.releases.popular = response
+      console.log(homePage.releases)
       const titleDiv = document.querySelector('.slide > .details > .recommended-title') as HTMLTitleElement;
       const ratingDiv = document.querySelector('.slide > .details > .rating') as HTMLDivElement;
       const description = document.querySelector('.slide > .details > .description') as HTMLDivElement;
       const watchButton = document.querySelector('.slide > .details > .btn') as HTMLAnchorElement;
   
-      const randomIndex = Math.floor(Math.random() * this.popular.length);
-      const selectedAnime = this.popular[randomIndex];
+      const randomIndex = Math.floor(Math.random() *homePage.releases.popular.length );
+      console.log(randomIndex)
+      const selectedAnime = homePage.releases.popular[randomIndex];
       const titleString = selectedAnime.title.userPreferred;
       const ratingText = (selectedAnime.averageScore / 10).toString();
       const descriptionText = selectedAnime.description.length < 400 
@@ -287,6 +289,7 @@ class HomePage {
       description.innerHTML = descriptionText;
       watchButton.id = `${randomIndex}`;
       watchButton.addEventListener('click', this.fetchById);
+      watchButton.dataset.type= 'popular'
       details.style.visibility =''
       spinner.style.display ='none'
       this.popularFill();
@@ -492,7 +495,7 @@ class HomePage {
         if(!window.sessionStorage.getItem('trending')){
           window.sessionStorage.setItem('trending', JSON.stringify(media))
         }
-        homePage.releases.latest = media
+        homePage.releases.trending = media
         
         if(media){
             spinner.style.display = 'none'
@@ -523,18 +526,21 @@ class HomePage {
             link.appendChild(playButton)
             animeImage.classList.add('anime-image')
             blur.classList.add('hover-blur')
+            blur.draggable = false;
             blur.id = `${i}`
             blur.appendChild(releasing)
             title.textContent = media[i].title.userPreferred ?
                     media[i].title.userPreferred :
                     media[i].title.romaji
             div.classList.add('image-holder')
-            
+            div.draggable = false;
             div2.classList.add('p-holder')
             playButton.classList.add('play-button')
             playButton.id = `${i}`
+            playButton.draggable = false
             blur.appendChild(link)
             blur.appendChild(title)
+            animeImage.draggable = false
             animeImage.src = media[i].coverImage.extraLarge ? 
                     media[i].coverImage.extraLarge :
                     media[i].coverImage.large
@@ -543,6 +549,7 @@ class HomePage {
             div.appendChild(div2)
             div.appendChild(blur)
             cardholder.appendChild(div)
+            cardholder.draggable = false
 
             if(homePage.isOffScreen(div,cardholder.clientWidth)){
               div.classList.add('off-screen-blur')
@@ -590,14 +597,17 @@ class HomePage {
     
      recommendedFill(){
     
-      const arr = homePage.releases.latest ? homePage.releases.latest : JSON.parse(window.sessionStorage.getItem('latest') as string)
+      const arr = homePage.releases.trending.length > 0 ? homePage.releases.trending : JSON.parse(window.sessionStorage.getItem('latest') as string)
+      if(JSON.stringify(homePage.releases.trending) !== JSON.stringify(arr)){
+        homePage.releases.trending=arr
+      }
       const recommendedDIv = document.querySelector('.recommended2') as HTMLDivElement
       const animeImage = document.createElement('img')
       const randomIndex = Math.floor(Math.random()* arr.length)
       const title = document.createElement('h4')
       const titleDiv = document.querySelector('.recommended2 > .details > .recommended-title') as HTMLDivElement
       const descriptionPara =document.querySelector('.recommended2 > .details > .description') as HTMLParagraphElement
-      const watchButton = document.createElement('a')
+      const watchButton = recommendedDIv.querySelector('.btn') as HTMLAnchorElement
       const imageHolder = document.querySelector('.recommended2  > .recommended-image') as HTMLDivElement
       const ratingDiv = document.querySelector('.recommended2 > .details > .rating') as HTMLDivElement 
       const ratingText = document.createTextNode(( arr[randomIndex].averageScore / 10).toString());
@@ -621,7 +631,9 @@ class HomePage {
           
       watchButton.id = `${randomIndex}`
       watchButton.addEventListener('click', homePage.fetchById)
-      
+      watchButton.dataset.type= 'trending'
+
+
       titleDiv.textContent = arr[randomIndex].title.userPreferred ? arr[randomIndex].title.userPreferred  : arr[randomIndex].title.romaji ;
     
       descriptionPara.innerHTML = arr[randomIndex].description.length < 300 ? descriptionPara.innerHTML = arr[randomIndex].description : descriptionPara.innerHTML = arr[randomIndex].description.substring(0,  300) + '...'
@@ -638,7 +650,7 @@ class HomePage {
 
 
     popularFill(){
-      const media = this.popular.length > 0 ? this.popular : JSON.parse(window.sessionStorage.getItem('popular') as string)
+      const media = homePage.releases.popular.length > 0 ? homePage.releases.popular : JSON.parse(window.sessionStorage.getItem('popular') as string)
 
       console.log(media)
 
@@ -680,7 +692,7 @@ class HomePage {
           window.sessionStorage.removeItem('episode-data')
         }
         
-        const data = target.closest('.latest-release') !== null ?  homePage.releases.latest[Number(index)]: homePage.popular[Number(index)]
+        const data = target.closest('.latest-release') !== null ?  homePage.releases.trending[Number(index)]: homePage.releases.popular[Number(index)]
         const animeData = JSON.stringify(data)
         window.sessionStorage.setItem('anime-data', animeData)
         const url = 'anime-details.html';
@@ -857,5 +869,4 @@ if(carousels){
     carousel.scrollLeft = 0
   })
 }
-
 

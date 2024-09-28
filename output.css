@@ -84,7 +84,7 @@ body {
 }
 @media (max-width: 478px) {
   :root {
-    --grid-columns: 1.4;
+    --grid-columns: 1;
   }
 }
 .watch-now img {
@@ -109,56 +109,52 @@ body {
 }
 
 @media (min-width: 1199px) {
-  .hold {
+  .slide {
+    position: relative;
     width: 100vw;
-    margin-bottom: 4rem;
+    height: 100vh;
+    color: white;
+    border-radius: 15px;
   }
-  .hold p {
-    display: inline;
-    position: relative;
-    left: 5%;
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 0;
-    border-bottom: 4px solid white;
-  }
-  .recommended2 {
-    width: 90vw;
-    position: relative;
-    display: flex;
-  }
-  .recommended2 .recommended-image {
-    width: var(--recommended-width);
-    height: 385px;
-    padding-right: 2rem;
-    box-sizing: border-box;
-    cursor: pointer;
-  }
-  .recommended2 .recommended-image .anime-image {
+  .slide .side-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    background: linear-gradient(to right, black, transparent);
   }
-  .recommended2 .details {
-    position: relative;
-    max-width: 70%;
+  .slide .bottom-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, black, transparent);
   }
-  .recommended2 .details .description {
-    font-size: 1.3rem;
+  .slide .details {
+    position: absolute;
+    top: 30%;
+    left: 5%;
   }
-  .recommended2 .details .recommended-title {
+  .slide .details .description {
+    max-width: 60%;
+    font-size: 1.5rem;
+  }
+  .slide .details .rating {
+    margin-top: 1.3rem;
+  }
+  .slide .details .btn {
+    margin-top: 2rem;
+  }
+  .slide .recommended-title {
     font-size: 2.5rem;
     font-weight: bold;
-    margin-top: 0;
+    margin: 0;
   }
-  .recommended2 .details .rating {
+  .slide .rating {
     font-size: 1.3rem;
   }
-}
-.latest-release {
-  margin-top: 4rem;
-}
-
-@media (min-width: 1200px) {
   .hold {
     width: 100vw;
     margin-bottom: 4rem;
@@ -204,59 +200,11 @@ body {
     font-size: 1.3rem;
   }
 }
-@media (min-width: 1199px) {
-  .slide {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    color: white;
-    border-radius: 15px;
-  }
-  .slide .side-gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 150%;
-    height: 100%;
-    background: linear-gradient(to right, black, transparent);
-  }
-  .slide .bottom-gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 150%;
-    height: 100%;
-    background: linear-gradient(to top, black, transparent);
-  }
-  .slide .details {
-    position: absolute;
-    top: 30%;
-    left: 5%;
-  }
-  .slide .details .description {
-    max-width: 60%;
-    font-size: 1.5rem;
-  }
-  .slide .details .rating {
-    margin-top: 1.3rem;
-  }
-  .slide .details .btn {
-    margin-top: 2rem;
-  }
-  .slide .recommended-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 0;
-  }
-  .slide .rating {
-    font-size: 1.3rem;
-  }
-}
 .bottom-gradient-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 150%;
+  width: 100%;
   height: 100%;
   background: linear-gradient(to top, black, transparent);
 }
@@ -273,7 +221,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 150%;
+    width: 100%;
     height: 100%;
     background: linear-gradient(to right, black, transparent);
   }
@@ -281,7 +229,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 150%;
+    width: 100%;
     height: 100%;
     background: linear-gradient(to top, black, transparent);
   }
@@ -305,16 +253,22 @@ body {
     margin-top: 2rem;
   }
   .slide .recommended-title {
-    font-size: 2.5rem;
+    font-size: 1.7rem;
     font-weight: bold;
     margin: 0;
     padding-bottom: 1.3rem;
+    max-width: 80%;
+    text-align: center;
   }
   .slide .rating {
     font-size: 1.3rem;
   }
   .hold {
-    font-size: 2.5rem;
+    font-size: 1.7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   .recommended2 {
     display: flex;
@@ -323,7 +277,11 @@ body {
     align-items: center;
   }
   .recommended2 .recommended-image {
+    max-width: 80%;
     cursor: pointer;
+  }
+  .recommended2 .recommended-image .anime-image {
+    max-width: 100%;
   }
   .recommended2 .details {
     display: flex;
@@ -331,9 +289,14 @@ body {
     justify-content: center;
     align-items: center;
   }
+  .recommended2 .details .recommended-title {
+    max-width: 80%;
+    text-align: center;
+  }
   .recommended2 .details .description {
-    max-width: 70%;
+    max-width: 80%;
     font-size: 1.3rem;
+    text-align: center;
   }
   .recommended2 .details .recommended-title {
     font-size: 1.5rem;

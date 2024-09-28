@@ -1,4 +1,4 @@
-type Nav = 'popular' | 'latest' | 'home' | 'genre';
+type Nav = 'popular' | 'latest' | 'home' | 'genre' | 'down';
 type NavRelations = {
   [key:string]: () =>void;
 };
@@ -7,7 +7,7 @@ type NavRelations = {
 
 
 class Global{
-     carousels: NodeListOf<Element>;
+    carousels: NodeListOf<Element>;
     banners: any[];
     images: any[];
     queryTimer: any;
@@ -51,8 +51,7 @@ initializeCarousels() {
     let latestIsScrolling = false;
     let latestScrollBy = 0;
     let limit = 0;
-    let isDown = false;
-    let startX: number, scrollLeft: number;
+    
 
     const isOffScreen = (element: HTMLElement, containerWidth: number): boolean => {
       return element.getBoundingClientRect().left <= 0 || 
@@ -68,17 +67,20 @@ initializeCarousels() {
       const nextArr = [nextButton, nextSpan];
       const prevArr = [prevButton, prevSpan];
 
-      const prevButtonDisplay = getComputedStyle(prevButton).display;
-      const nextButtonDisplay = getComputedStyle(nextButton).display;
+      const prevSpanDisplay = getComputedStyle(prevSpan).display;
+      const nextSpanDisplay = getComputedStyle(nextSpan).display;
 
-      if (nextArr.includes(target) && prevButtonDisplay === 'none') {
-        prevButton.style.display = 'inline';
-        prevSpan.style.display = 'inline';
+      if (nextArr.includes(target) && prevSpanDisplay === 'none') {
+        
+        prevSpan.classList.toggle('show')
+        prevSpan.classList.toggle('hide')
       }
 
-      if (prevArr.includes(target) && nextButtonDisplay === 'none') {
-        nextButton.style.display = 'inline';
-        nextSpan.style.display = 'inline';
+      
+      if (prevArr.includes(target) && nextSpanDisplay === 'none') {
+        
+        nextSpan.classList.toggle('show')
+        nextSpan.classList.toggle('hide')
       }
 
       const isPrev = prevArr.includes(target);
@@ -122,33 +124,29 @@ initializeCarousels() {
       }, 500);
     };
 
-    const touchStart = (e: TouchEvent) => {
-      isDown = true;
-      startX = e.touches[0].pageX - carousel.offsetLeft;
-      scrollLeft = carousel.scrollLeft;
-    };
+    // const phoneScroll = (e:Event) => {
+    //   const width  = document.documentElement.clientWidth
+    //   const imagesOnScreen = carousel.querySelectorAll('.image-holder:not(.off-screen-blur)').length;
+    //   const allImages = carousel.querySelectorAll('.image-holder') as NodeListOf<HTMLDivElement>;
 
-    const touchMove = (e: TouchEvent) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.touches[0].pageX - carousel.offsetLeft;
-      const walk = (x - startX) * 1; // Adjust the multiplier for faster/slower scroll
-      carousel.scrollLeft = scrollLeft - walk;
-    };
-
-    const touchEnd = () => {
-      isDown = false;
-    };
+    //   allImages.forEach(image => {
+    //     if (isOffScreen(image, carousel.clientWidth) &&  !image.classList.contains('off-screen-blur')) {
+    //       image.classList.add('off-screen-blur');
+    //     } else if (image.classList.contains('off-screen-blur') && !isOffScreen(image, carousel.clientWidth)) {
+    //       image.classList.remove('off-screen-blur');
+    //     }
+    //   })
+    // }
 
     nextButton.addEventListener('click', scrollCarousel);
     prevButton.addEventListener('click', scrollCarousel);
     nextSpan.addEventListener('click', scrollCarousel);
     prevSpan.addEventListener('click', scrollCarousel);
-
-    carousel.addEventListener('touchstart', touchStart);
-    carousel.addEventListener('touchmove', touchMove);
-    carousel.addEventListener('touchend', touchEnd);
-    carousel.addEventListener('touchcancel', touchEnd);
+    // carousel.addEventListener('scroll', phoneScroll)
+    // carousel.addEventListener('touchstart', touchStart);
+    // carousel.addEventListener('touchmove', touchMove);
+    // carousel.addEventListener('touchend', touchEnd);
+    // carousel.addEventListener('touchcancel', touchEnd);
   });
 }
 
@@ -177,9 +175,8 @@ initializeCarousels() {
       const response = await fetch(url, options)
       const data = await  response.json()
       console.log(data.data)
-      // window.sessionStorage.setItem('genres', JSON.stringify(data.data.GenreCollection))
      return data.data.GenreCollection
-      // return data.data.Page.media
+    
   }
 
   async genreClick(e:Event){
@@ -211,6 +208,23 @@ initializeCarousels() {
     await globalScript.fetchById(Number(index)) 
 }
 
+      formSubmit(e:Event){
+        e.preventDefault()
+        e.stopImmediatePropagation()
+        console.log(e)
+          if((e.target as HTMLElement).classList[0] !== 'mobile-search-form'
+      && (e.target as HTMLElement).classList[0] !== 'search-bar'){
+        return
+      }
+      
+      const query = ((e.target as HTMLFormElement).querySelector('input') as HTMLInputElement).value
+      console.log(query)
+
+      window.sessionStorage.setItem('search-query', JSON.stringify(query));
+    
+      window.location.href = 'grid.html';
+      }
+
 
     makeSearchBarBig(e:Event){
         const searchButton = e.target as HTMLElement
@@ -227,14 +241,14 @@ initializeCarousels() {
 
     makeSearchBarSmall(e:Event){
         const target = e.target as HTMLElement
-        console.log(target.classList[0]!=='search-input' && target.classList[0]!=='result' &&  !globalScript.resultsDisplayed && input.classList.contains('visible'))
+        console.log(target.classList[0]!=='search-input' && target.classList[0]!=='result' &&  !globalScript.resultsDisplayed && desktopInput.classList.contains('visible'))
         console.log(target.classList[0]!=='search-input' && target.classList[0]!=='result'&& globalScript.resultsDisplayed)
 
         const searchButton = document.querySelector('.fas.fa-search') as HTMLElement
 
 
     if(target.classList[0]!=='search-input' && target.classList[0]!=='fas' 
-    && target.classList[0]!=='result' &&  !globalScript.resultsDisplayed && input.classList.contains('visible') ){
+    && target.classList[0]!=='result' &&  !globalScript.resultsDisplayed && desktopInput.classList.contains('visible') ){
           const searchResultDiv = document.querySelector('.search-results') as HTMLDivElement
           const input = document.querySelector('.search-input') as HTMLInputElement
   
@@ -247,6 +261,7 @@ initializeCarousels() {
           }
       
           console.log(e)
+          input.style.width = '220px'
           input.classList.remove('visible')
           input.classList.add('hidden')
           searchButton.classList.remove('hidden')
@@ -324,7 +339,7 @@ initializeCarousels() {
     async queryAnilist(query:string){
       const x = `
       query ($searchTerm: String) {
-        Page(page: 1, perPage: 10) {
+        Page(page: 1, perPage: 25) {
           media(search: $searchTerm, type: ANIME) {
             id
             idMal
@@ -414,7 +429,7 @@ initializeCarousels() {
     }
 
 
-
+     
 
 
 
@@ -464,14 +479,13 @@ initializeCarousels() {
 
     toggleMobileMenu(e:Event){
         const target = e.target as HTMLButtonElement
-        const navHolder = document.querySelector('.nav-button-holder') as HTMLDivElement
-        if(target.classList.contains('mobile-nav-toggle') && !target.classList.contains('toggled') ){
-            target.classList.add('toggled')
-            navHolder.classList.add('toggled')
-        }else{
-            target.classList.remove('toggled')
-            navHolder.classList.remove('toggled')
-        }
+        const navHolder = document.querySelector('.sidebar') as HTMLDivElement
+        const backgroundBlur = document.querySelector('.background-blur') as HTMLDivElement
+        document.body.classList.toggle('scroll-block')
+        target.classList.toggle('toggled')
+        navHolder.classList.toggle('off-screen')
+        backgroundBlur.classList.toggle('active')
+      
     }
   
     
@@ -547,7 +561,14 @@ initializeCarousels() {
           window.location.href= 'grid.html'
         },
         'genre-button':() => {
-          const genreDropdown = document.querySelector('.genres-holder') as HTMLDivElement
+          const genreDropdown =   document.querySelector('.genres-holder') as HTMLDivElement
+          // genreDropdown.classList.toggle('hidden')
+          genreDropdown.classList.toggle('show')
+          // lobalScript.displayGenres()g
+        },
+        'down-arrow':() => {
+          const genreDropdown =   document.querySelector('.genres-holder') as HTMLDivElement
+          // genreDropdown.classList.toggle('hidden')
           genreDropdown.classList.toggle('show')
           // lobalScript.displayGenres()g
         },
@@ -578,8 +599,10 @@ initializeCarousels() {
       }
       console.log(genres)
       const genreDropdown = document.querySelector('.genres-holder > .genres') as HTMLDivElement
-      const nsfwGenre = ['Hentai']
-      const  filteredGenres = genres.filter((genre:string) => genre!=='hentai')
+      const mobileDropDown = document.querySelector('.sidebar >.list-of-links > li > .genre-list') as HTMLDivElement
+     
+      const nsfwGenre = 'Hentai'
+      const  filteredGenres = genres.filter((genre:string) => genre!=='Hentai')
       for(let i =0;i<15;i++){
         const genre = filteredGenres[i]
         const genreAnchor = document.createElement('a')
@@ -587,12 +610,20 @@ initializeCarousels() {
         genreDropdown.appendChild(genreAnchor)
         
       }
+      for(let i =0;i<15;i++){
+        const genre = filteredGenres[i]
+        const listItem =  document.createElement('li')
+        
+        listItem.textContent = genre
+     
+        mobileDropDown.appendChild(listItem)
+      }
     }
 
     clearGridStorage(){
       const genre = JSON.parse(window.sessionStorage.getItem('grid-genre')as string)
       const sortBy = JSON.parse(window.sessionStorage.getItem('sort-by')as string)
-
+      const searchQuery = JSON.parse(window.sessionStorage.getItem('search-query')as string)
       
       for(let i =1;i<11;i++){
         if(window.sessionStorage.getItem(`page-${i}-data-${genre}`)){
@@ -610,34 +641,89 @@ initializeCarousels() {
       }
       if(window.sessionStorage.getItem('page-num')){
         window.sessionStorage.removeItem('page-num')
+      } 
+      if(window.sessionStorage.getItem('search-query')){
+        window.sessionStorage.removeItem('search-query')
       }
     }
 
     goHome(){
         globalScript.clearGridStorage()
-        window.location.href = 'http://127.0.0.1:5500/index.html'
+        window.location.href = 'index.html'
     }
-}
 
+    
+
+    mobileListener(e:Event){
+        const target = (e.target as HTMLElement)
+        const actionKey = target.classList[0]
+      
+        
+        const actions :NavRelations= {
+          'home-button': () => {
+            
+            globalScript.clearGridStorage()
+            
+            globalScript.goHome()
+          },
+          'popular-button':() => {
+            const sortOption = JSON.stringify('popular')
+            globalScript.clearGridStorage()
+            window.sessionStorage.setItem('sort-by', sortOption)
+            window.location.href= 'grid.html'
+          },
+          'genre-button':() => {
+            const genreDropdown =document.querySelector('#list-of-links > li.genre-button > ul') as HTMLDivElement;
+            genreDropdown.classList.toggle('hidden')
+            genreDropdown.classList.toggle('active')
+            // lobalScript.displayGenres()g
+          },'down-arrow':() => {
+            const genreDropdown =document.querySelector('#list-of-links > li.genre-button > ul') as HTMLDivElement;            
+            genreDropdown.classList.toggle('hidden')
+            genreDropdown.classList.toggle('active')
+            // lobalScript.displayGenres()g
+          },
+          'latest-button':() => {
+            const sortOption = JSON.stringify('trending')
+            globalScript.clearGridStorage()
+            window.sessionStorage.setItem('sort-by', sortOption)
+            window.location.href= 'grid.html'
+          }
+      }
+
+      const executeAction = (actionKey: string) => {
+        if (actions[actionKey]) {
+          actions[actionKey]();
+        } else {
+          // console.log(`No action found for key: ${actionKey}`);
+        }
+      };
+      executeAction(actionKey)
+}
+}
 const globalScript = new  Global()
 const mobileNavbutton = document.querySelector('.mobile-nav-toggle') as HTMLButtonElement
 const searchButton =document.querySelector(".fas.fa-search") as HTMLElement
-const input = document.querySelector('.search-input') as HTMLInputElement
+const desktopInput = document.querySelector('.search-input') as HTMLInputElement
+const desktopInputForm = document.querySelector('.search-bar') as HTMLInputElement
+
+const mobileInputForm = document.querySelector('.mobile-search-form') as HTMLInputElement
 const h1 = document.querySelector('.zanime')  as HTMLHeadingElement
 const navBar = document.querySelector('.nav-bar') as HTMLDivElement
 const searchResultDiv = document.querySelector('.search-results') as HTMLDivElement
 const genreDropdown = document.querySelector('.genres-holder > .genres') as HTMLDivElement
+const sideBar = document.querySelector('.sideBar')
+const mobileGenreDropdown =document.querySelector('#list-of-links > li.genre-button > ul') as HTMLDivElement
 genreDropdown.addEventListener('click', globalScript.genreClick)
-// const genreButton = document.querySelector('.genre-button') as HTMLSpanElement
-// genreButton.addEventListener('mouse')
-
+mobileGenreDropdown.addEventListener('click', globalScript.genreClick)
+document.addEventListener('click', globalScript.mobileListener)
 globalScript.getGenres()
-
 h1.addEventListener('click', globalScript.goHome)
 searchButton.addEventListener('click', globalScript.makeSearchBarBig)
-
+desktopInputForm.addEventListener('submit', globalScript.formSubmit)
+mobileInputForm.addEventListener('submit', globalScript.formSubmit)
 document.addEventListener('click', globalScript.makeSearchBarSmall)
-input.addEventListener('input', globalScript.getSearchResults)
+desktopInput.addEventListener('input', globalScript.getSearchResults)
 mobileNavbutton.addEventListener('click', globalScript.toggleMobileMenu)
 searchResultDiv.addEventListener('click', globalScript.resultClick)
 navBar.addEventListener('click', globalScript.navBarListener)

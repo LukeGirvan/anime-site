@@ -22,7 +22,7 @@
             <div class="logo-holder">
             <h1 class="zanime">zAnime</h1>
             </div>
-           <div class="nav-button-holder flex">
+           <div class="nav-button-holder">
             <div class="genres-holder">
                 <div class="genres">
                         
@@ -31,7 +31,7 @@
             </div>
            <ul id='list-of-links' class='list-of-links flex'>
                 <li><span  aria-hidden='true' class="home-button">Home</span> </li>
-                <li><span aria-hidden='true' class="genre-button">Genre</span></li>
+                <li><span aria-hidden='true' class="genre-button">Genre</span><img src="images/icons8-sort-down-50.png" alt="down arrow" class="down-arrow"></li>
                 <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
                 <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
                 <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
@@ -53,7 +53,24 @@
 
 
         </div>
-        
+        <div class="background-blur"></div>
+        <div class="sidebar off-screen">
+            <ul id='list-of-links' class='list-of-links'>
+                <li><span  aria-hidden='true' class="home-button">Home</span> </li>
+                <li class="genre-button"><span aria-hidden='true'class="genre-button"></span>Genre</span><img src="images/icons8-sort-down-50.png" alt="down arrow" class="down-arrow">
+                    <ul class="genre-list hidden">
+                        
+                    </ul>
+                </li>
+                <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
+                <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
+                <li><form class="mobile-search-form" >
+                    
+                    <input type="text" name="search" class="mobile-search" placeholder="Search..." />
+                    
+                </form></li>
+            </ul>
+        </div>
             <div class="slide">
                 <div class="spinner"></div>
                <div class="background"></div>
@@ -81,9 +98,9 @@
                 <h2>Top Airing</h2>
             </div>
             
-            <div class="carousel-wrapper">
+            <div class="carousel-wrapper" draggable="false">
                 <span class="carousel-prev-span"><button class="carousel-prev"></button></span>
-                <div class="carousel latest">
+                <div class="carousel latest" draggable="false">
                    <div class="spinner"></div>
                 </div>
                 <span class="carousel-next-span"><button class="carousel-next"></button></span>
@@ -118,9 +135,9 @@
             <h2>Popular  All Time</h2>
         </div>
         
-        <div class="carousel-wrapper">
-            <span class="carousel-prev-span"><button class="carousel-prev"></button></span>
-            <div class="carousel popular">
+        <div class="carousel-wrapper"draggable="false">
+            <span class="carousel-prev-span hide"><button class="carousel-prev"></button></span>
+            <div class="carousel popular"draggable="false">
                <div class="spinner"></div>
             </div>
             <span class="carousel-next-span"><button class="carousel-next"></button></span>
@@ -129,8 +146,8 @@
       
     </div>
         <div class="footer">
-            <span class="copyright">&copy;</span> <span class="zanime">Zanime</span>
-            <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"><img src="images/icons8-linkedin-96.png" alt="" class="linkedin-logo"></div>
+             <span class="zanime">&copy;Zanime</span>
+            <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"></div>
         </div>
     </div>
     <script  src="index.js"></script>

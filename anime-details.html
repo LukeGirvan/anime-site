@@ -19,14 +19,13 @@
 </head>
 <body>
     <div class='main'>
-        
         <div class="nav-bar">
-            <div id="loading-bar"></div>
+        
             <div class="logo-holder">
-                <h1 class="zanime">zAnime</h1>
+            <h1 class="zanime">zAnime</h1>
             </div>
-           <div class="nav-button-holder flex">
-            <div class="genres-holder hide">
+           <div class="nav-button-holder">
+            <div class="genres-holder">
                 <div class="genres">
                         
 
@@ -34,26 +33,45 @@
             </div>
            <ul id='list-of-links' class='list-of-links flex'>
                 <li><span  aria-hidden='true' class="home-button">Home</span> </li>
-                <li><span aria-hidden='true' class="genre-button">Genre</span></li>
+                <li><span aria-hidden='true' class="genre-button">Genre</span><img src="images/icons8-sort-down-50.png" alt="down arrow" class="down-arrow"></li>
                 <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
                 <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
                 <li><input type="text" placeholder='Search....' class='mobile-search'/></li>
             </ul>
            </div>
 
-
+     
             <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" name="" class="search-input hidden"  placeholder='Search...'  />
-                <div class="search-results">
-                    
-                </div>
+                <form class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="search" class="search-input hidden" placeholder="Search..." />
+                    <div class="search-results"></div>
+                </form>
             </div>
+            
             <button class='mobile-nav-toggle' aria-controls='list-of-links' aria-expanded='false' >
               <span class="sr-only">Menu</span>
             </button>
 
 
+        </div>
+        <div class="background-blur"></div>
+        <div class="sidebar off-screen">
+            <ul id='list-of-links' class='list-of-links'>
+                <li><span  aria-hidden='true' class="home-button">Home</span> </li>
+                <li class="genre-button"><span aria-hidden='true'class="genre-button"></span>Genre</span><img src="images/icons8-sort-down-50.png" alt="down arrow" class="down-arrow">
+                    <ul class="genre-list hidden">
+                        
+                    </ul>
+                </li>
+                <li><span aria-hidden='true'class="latest-button">Trending</span> </li>
+                <li> <span aria-hidden='true' class="popular-button">Popular</span></li>
+                <li><form class="mobile-search-form" >
+                    
+                    <input type="text" name="search" class="mobile-search" placeholder="Search..." />
+                    
+                </form></li>
+            </ul>
         </div>
         <div class="anime-details-container">
             <div class="background-image">
@@ -72,7 +90,7 @@
                     <p class="rating"> </p>
                     <p  class="status"></p>
                     <div class="button-holder">
-                        <span><a  class="btn"><img src="images/triangular-play-button-svgrepo-com.svg" alt="play triangle" class="play-triangle">Watch Now</a>
+                        <span><a  class="btn" href="watch.html"><img src="images/triangular-play-button-svgrepo-com.svg" alt="play triangle" class="play-triangle" >Watch Now</a>
                         </span>
                         <span>
                             <a  class="btn"><img  src="https://img.icons8.com/ios/50/bookmark-ribbon--v1.png" alt="bookmark-ribbon--v1" class="play-triangle"/>Watch Later</a>
@@ -131,9 +149,9 @@
                   
             </div>
             <div class="footer">
-                <span class="copyright">&copy;</span> <span class="zanime">Zanime</span>
-                <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"><img src="images/icons8-linkedin-96.png" alt="" class="linkedin-logo"></div>
-            </div>
+                <span class="zanime">&copy;Zanime</span>
+               <div class="logos"><img src="images/github-mark-white.png" alt="" class="github-logo"></div>
+           </div>
         </div>
        
         
