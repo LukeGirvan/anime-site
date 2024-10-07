@@ -24,7 +24,9 @@ class  Grid{
     page:number
     titles:string[]
     cardholder:HTMLDivElement;
+    hasNextPage: boolean;
     constructor(){
+        this.hasNextPage = false;
         this.gridItems = [];
         this.page = window.sessionStorage.getItem('page-num') ?
         JSON.parse(window.sessionStorage.getItem('page-num') as string) : 1; 
@@ -376,42 +378,47 @@ class  Grid{
 
 
     async populateCards(){
-        let data
-        let nextPageCheck;
+        let data, nextPageCheck, pageInfo;
+         
         const cardholder = document.querySelector('.grid') as HTMLDivElement
-        // if(!cardholder.querySelector('.image-holder')){
-        //   grid.page =1
-        //   const sortOption = JSON.parse(window.sessionStorage.getItem('sort-by') as string)
-        //   data = sortOption === 'popular' ? JSON.parse( window.sessionStorage.getItem('popular') as string) : JSON.parse( window.sessionStorage.getItem('latest') as string);
-        //   grid.gridItems = data
-        //   console.log('cached')
-        // } else{
-        //   data = await grid.queryForType(grid.page)
-    
-        // }
+       
         const sortBy = JSON.parse(window.sessionStorage.getItem('sort-by') as string)
         const genre =  JSON.parse(window.sessionStorage.getItem('grid-genre') as string)
         const queryForSearch = JSON.parse(window.sessionStorage.getItem('search-query') as string)
         const pageNum = grid.page 
 
-        if(!genre &&    pageNum === 1 && !queryForSearch){
+        if(!genre && pageNum === 1 && !queryForSearch){
           data = JSON.parse( window.sessionStorage.getItem(`${sortBy}`) as string)
         }
+
         else if(queryForSearch){
           nextPageCheck = await grid.queryAnilist(queryForSearch)
+          console.log(nextPageCheck)
+          pageInfo = nextPageCheck.Page.pageInfo.hasNextPage
+          grid.hasNextPage = pageInfo
           data = nextPageCheck.Page.media
         
         }
         else if(genre && window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`)){
-          data = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`)as string)
+          nextPageCheck = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`)as string)
+          pageInfo = nextPageCheck.Page.pageInfo.hasNextPage
+          grid.hasNextPage = pageInfo
+          data = nextPageCheck.Page.media
           console.log('cached')
         }
         else if(!genre && window.sessionStorage.getItem(`page-${pageNum}-data-${sortBy}`)){
-          data = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${sortBy}`)as string)
+          nextPageCheck = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${sortBy}`)as string)
+          pageInfo = nextPageCheck.Page.pageInfo.hasNextPage
+          grid.hasNextPage = pageInfo
+          data = nextPageCheck.Page.media
           console.log('cached')
+       
         }
         else{
           nextPageCheck = await grid.queryForType(pageNum)
+          console.log(nextPageCheck)
+          pageInfo = nextPageCheck.Page.pageInfo.hasNextPage
+          grid.hasNextPage = pageInfo
           data = nextPageCheck.Page.media
         }
         const gridDiv =document.querySelector('.grid') as HTMLDivElement
@@ -435,13 +442,13 @@ class  Grid{
         
         gridDiv.addEventListener('click', grid.test)
         pagination.style.display='flex'
-        grid.pageNum()
+        // grid.pageNum()
         pagination.addEventListener('click', grid.pagination)
         // cardholder.addEventListener('mouseover', grid.hoverListener)
         grid.titles.sort((a,b) => a.localeCompare(b));
         console.log(grid.titles)
         dropDown.addEventListener('change', grid.sortByRating)
-        const stringifiedData = JSON.stringify(data)
+        const stringifiedData = JSON.stringify(nextPageCheck)
 
         if(genre && !window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`) ){
           window.sessionStorage.setItem(`page-${pageNum}-data-${genre}`,stringifiedData )
@@ -668,33 +675,41 @@ class  Grid{
 
 
     pageNum(){
-      const active = document.querySelector('.active') as HTMLAnchorElement
-      const pageNum = grid.page
+      // const active = document.querySelector('.active') as HTMLAnchorElement
+      // const pageNum = grid.page
      
 
-      if(active && pageNum && Number(active.textContent) !== pageNum){
-        const target =( document.querySelector('.pagination') as HTMLAnchorElement).children[Number(pageNum) -1]
-        active.classList.remove('active')
-        target.classList.add('active')
-      }else{
-        console.log('didnt enter if ststement')
-      }
+      // if(active && pageNum && Number(active.textContent) !== pageNum){
+      //   const target =( document.querySelector('.pagination') as HTMLAnchorElement).children[Number(pageNum) -1]
+      //   active.classList.remove('active')
+      //   target.classList.add('active')
+      // }else{
+      //   console.log('didnt enter if ststement')
+      // }
     }
 
     pagination(e:Event){
       const target  = e.target as HTMLElement
-      console.log(target.textContent)
-      if(target.classList.contains('active'))return;
-    
+      console.log(target.classList[0] === 'prev-page' && grid.page !== 1)
+      console.log(grid.hasNextPage)
+      console.log(target.classList[0] === 'next-page' &&  grid.hasNextPage)
+      // if(target.classList.contains('active'))return;
+      
       console.log(target)
-      grid.page = Number(target.textContent)
-      grid.changePage(Number(target.textContent))
+      if(target.classList[0] === 'prev-page' && grid.page !== 1){
+        grid.page -=1 
+        grid.changePage(grid.page)
+      }
+      if(target.classList[0] === 'next-page' &&  grid.hasNextPage){
+        grid.page +=1 
+        grid.changePage(grid.page)
+      }
 
     }
 
 
     changePage(pageNum:number){
-      window.sessionStorage.setItem('page-num', JSON.stringify(grid.page))
+      window.sessionStorage.setItem('page-num', JSON.stringify(pageNum))
       window.location.href = 'grid.html'
     }
 

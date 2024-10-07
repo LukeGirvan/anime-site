@@ -428,6 +428,53 @@ class HomePage {
     }
     ;
     fillCardHolder(cardholder, media) {
+        //   for(let i = 0;i<media.length;++i){
+        //     if(media[i].mal === null)continue;
+        //     const div = document.createElement('div')
+        //     const div2= document.createElement('div')
+        //     const animeImage = document.createElement('img')
+        //     const title = document.createElement('p')
+        //     const blur = document.createElement('div')
+        //     const playButton = document.createElement('img')
+        //     const link = document.createElement('a')
+        //     const releasing = document.createElement('div')
+        //     releasing.classList.add('releasing')
+        //     homePage.addReleasing(releasing, media[i].status)
+        //     div.id= `${i}`
+        //     link.id = `${i}`
+        //     link.classList.add('anime-link')
+        //     playButton.src = './images/play-button-icon-white-8.png'
+        //     link.appendChild(playButton)
+        //     animeImage.classList.add('anime-image')
+        //     blur.classList.add('hover-blur')
+        //     blur.draggable = false;
+        //     blur.id = `${i}`
+        //     blur.appendChild(releasing)
+        //     title.textContent = media[i].title.userPreferred ?
+        //             media[i].title.userPreferred :
+        //             media[i].title.romaji
+        //     div.classList.add('image-holder')
+        //     div.draggable = false;
+        //     div2.classList.add('p-holder')
+        //     playButton.classList.add('play-button')
+        //     playButton.id = `${i}`
+        //     playButton.draggable = false
+        //     blur.appendChild(link)
+        //     blur.appendChild(title)
+        //     animeImage.draggable = false
+        //     animeImage.src = media[i].coverImage.extraLarge ? 
+        //             media[i].coverImage.extraLarge :
+        //             media[i].coverImage.large
+        //     div.appendChild(animeImage)
+        //     div2.appendChild(title)
+        //     div.appendChild(div2)
+        //     div.appendChild(blur)
+        //     cardholder.appendChild(div)
+        //     cardholder.draggable = false
+        //     if(homePage.isOffScreen(div,cardholder.clientWidth)){
+        //       div.classList.add('off-screen-blur')
+        //     }
+        // }
         for (let i = 0; i < media.length; ++i) {
             if (media[i].mal === null)
                 continue;
@@ -438,9 +485,28 @@ class HomePage {
             const blur = document.createElement('div');
             const playButton = document.createElement('img');
             const link = document.createElement('a');
+            const metdaDataHolder = document.createElement('div');
+            const year = document.createElement('div');
+            const rating = document.createElement('div');
+            const ratingText = `${parseFloat(Number(media[i].averageScore) / 10)}`;
+            const ratingTextNode = document.createTextNode(ratingText);
+            const starIcon = document.createElement('i');
+            const circleIcon = document.createElement('i');
+            const titleTextNode = document.createTextNode(media[i].title.userPreferred.length < 25 ? media[i].title.userPreferred : media[i].title.userPreferred.substring(0, 23) + '...');
             const releasing = document.createElement('div');
             releasing.classList.add('releasing');
             homePage.addReleasing(releasing, media[i].status);
+            circleIcon.className = 'fa-solid fa-circle';
+            circleIcon.classList.add(media[i].status === 'RELEASING' ? 'green' : 'blue');
+            starIcon.className = 'fa-solid fa-star';
+            year.textContent = `${media[i].startDate.year} | ${media[i].format}`;
+            year.classList.add('year');
+            metdaDataHolder.classList.add('meta-data');
+            metdaDataHolder.appendChild(year);
+            rating.className = 'rating-div';
+            rating.appendChild(starIcon);
+            rating.appendChild(ratingTextNode);
+            metdaDataHolder.appendChild(rating);
             div.id = `${i}`;
             link.id = `${i}`;
             link.classList.add('anime-link');
@@ -448,30 +514,25 @@ class HomePage {
             link.appendChild(playButton);
             animeImage.classList.add('anime-image');
             blur.classList.add('hover-blur');
-            blur.draggable = false;
             blur.id = `${i}`;
             blur.appendChild(releasing);
-            title.textContent = media[i].title.userPreferred ?
-                media[i].title.userPreferred :
-                media[i].title.romaji;
+            title.appendChild(circleIcon);
+            title.appendChild(titleTextNode);
             div.classList.add('image-holder');
-            div.draggable = false;
             div2.classList.add('p-holder');
             playButton.classList.add('play-button');
             playButton.id = `${i}`;
-            playButton.draggable = false;
             blur.appendChild(link);
             blur.appendChild(title);
-            animeImage.draggable = false;
             animeImage.src = media[i].coverImage.extraLarge ?
                 media[i].coverImage.extraLarge :
                 media[i].coverImage.large;
             div.appendChild(animeImage);
             div2.appendChild(title);
+            div2.appendChild(metdaDataHolder);
             div.appendChild(div2);
             div.appendChild(blur);
             cardholder.appendChild(div);
-            cardholder.draggable = false;
             if (homePage.isOffScreen(div, cardholder.clientWidth)) {
                 div.classList.add('off-screen-blur');
             }

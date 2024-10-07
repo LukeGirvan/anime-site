@@ -554,7 +554,8 @@ body {
     color: rgb(0, 0, 0);
   }
   .carousel {
-    overflow: scroll;
+    overflow-y: hidden;
+    scrollbar-width: thin;
   }
   .carousel-prev-span, .carousel-next-span {
     display: none;
@@ -609,20 +610,25 @@ body {
   position: relative;
   font-size: 1.3rem;
   text-decoration: underline;
+  width: 100%;
+  transition: transform 0.5s ease-in-out;
+  animation: slideUp 0.5s ease-in-out;
 }
 .latest-release .carousel-wrapper .image-holder .p-holder, .popular .carousel-wrapper .image-holder .p-holder, .latest .carousel-wrapper .image-holder .p-holder, .recommended-anime .carousel-wrapper .image-holder .p-holder {
   margin-top: 0.5rem;
-  cursor: pointer;
 }
 .latest-release .carousel-wrapper .image-holder .p-holder p, .popular .carousel-wrapper .image-holder .p-holder p, .latest .carousel-wrapper .image-holder .p-holder p, .recommended-anime .carousel-wrapper .image-holder .p-holder p {
   margin-top: 0;
   margin-bottom: 1rem;
   max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .latest-release .carousel-wrapper .image-holder .anime-image, .popular .carousel-wrapper .image-holder .anime-image, .latest .carousel-wrapper .image-holder .anime-image, .recommended-anime .carousel-wrapper .image-holder .anime-image {
   height: 350px;
   min-width: 100%;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s slideUp;
 }
 .latest-release .carousel-wrapper .image-holder .hover-blur, .popular .carousel-wrapper .image-holder .hover-blur, .latest .carousel-wrapper .image-holder .hover-blur, .recommended-anime .carousel-wrapper .image-holder .hover-blur {
   display: flex;
@@ -653,7 +659,24 @@ body {
 .latest-release .carousel-wrapper .hover-blur:hover, .popular .carousel-wrapper .hover-blur:hover, .latest .carousel-wrapper .hover-blur:hover, .recommended-anime .carousel-wrapper .hover-blur:hover {
   opacity: 1;
 }
+.latest-release .meta-data, .popular .meta-data, .latest .meta-data, .recommended-anime .meta-data {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.latest-release .rating-div, .popular .rating-div, .latest .rating-div, .recommended-anime .rating-div {
+  color: rgb(255, 226, 62);
+}
+.latest-release .fa-solid.fa-circle, .popular .fa-solid.fa-circle, .latest .fa-solid.fa-circle, .recommended-anime .fa-solid.fa-circle {
+  font-size: 0.9rem;
+  padding-right: 0.3rem;
+}
 
+@media (min-width: 1200px) {
+  .off-screen-blur {
+    opacity: 0.2;
+  }
+}
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-top: 4px solid #3498db;

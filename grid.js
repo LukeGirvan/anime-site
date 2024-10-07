@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 class Grid {
     constructor() {
+        this.hasNextPage = false;
         this.gridItems = [];
         this.page = window.sessionStorage.getItem('page-num') ?
             JSON.parse(window.sessionStorage.getItem('page-num')) : 1;
@@ -325,18 +326,8 @@ class Grid {
     }
     populateCards() {
         return __awaiter(this, void 0, void 0, function* () {
-            let data;
-            let nextPageCheck;
+            let data, nextPageCheck, pageInfo;
             const cardholder = document.querySelector('.grid');
-            // if(!cardholder.querySelector('.image-holder')){
-            //   grid.page =1
-            //   const sortOption = JSON.parse(window.sessionStorage.getItem('sort-by') as string)
-            //   data = sortOption === 'popular' ? JSON.parse( window.sessionStorage.getItem('popular') as string) : JSON.parse( window.sessionStorage.getItem('latest') as string);
-            //   grid.gridItems = data
-            //   console.log('cached')
-            // } else{
-            //   data = await grid.queryForType(grid.page)
-            // }
             const sortBy = JSON.parse(window.sessionStorage.getItem('sort-by'));
             const genre = JSON.parse(window.sessionStorage.getItem('grid-genre'));
             const queryForSearch = JSON.parse(window.sessionStorage.getItem('search-query'));
@@ -346,18 +337,30 @@ class Grid {
             }
             else if (queryForSearch) {
                 nextPageCheck = yield grid.queryAnilist(queryForSearch);
+                console.log(nextPageCheck);
+                pageInfo = nextPageCheck.Page.pageInfo.hasNextPage;
+                grid.hasNextPage = pageInfo;
                 data = nextPageCheck.Page.media;
             }
             else if (genre && window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`)) {
-                data = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`));
+                nextPageCheck = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`));
+                pageInfo = nextPageCheck.Page.pageInfo.hasNextPage;
+                grid.hasNextPage = pageInfo;
+                data = nextPageCheck.Page.media;
                 console.log('cached');
             }
             else if (!genre && window.sessionStorage.getItem(`page-${pageNum}-data-${sortBy}`)) {
-                data = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${sortBy}`));
+                nextPageCheck = JSON.parse(window.sessionStorage.getItem(`page-${pageNum}-data-${sortBy}`));
+                pageInfo = nextPageCheck.Page.pageInfo.hasNextPage;
+                grid.hasNextPage = pageInfo;
+                data = nextPageCheck.Page.media;
                 console.log('cached');
             }
             else {
                 nextPageCheck = yield grid.queryForType(pageNum);
+                console.log(nextPageCheck);
+                pageInfo = nextPageCheck.Page.pageInfo.hasNextPage;
+                grid.hasNextPage = pageInfo;
                 data = nextPageCheck.Page.media;
             }
             const gridDiv = document.querySelector('.grid');
@@ -372,13 +375,13 @@ class Grid {
             const pagination = document.querySelector('.pagination');
             gridDiv.addEventListener('click', grid.test);
             pagination.style.display = 'flex';
-            grid.pageNum();
+            // grid.pageNum()
             pagination.addEventListener('click', grid.pagination);
             // cardholder.addEventListener('mouseover', grid.hoverListener)
             grid.titles.sort((a, b) => a.localeCompare(b));
             console.log(grid.titles);
             dropDown.addEventListener('change', grid.sortByRating);
-            const stringifiedData = JSON.stringify(data);
+            const stringifiedData = JSON.stringify(nextPageCheck);
             if (genre && !window.sessionStorage.getItem(`page-${pageNum}-data-${genre}`)) {
                 window.sessionStorage.setItem(`page-${pageNum}-data-${genre}`, stringifiedData);
             }
@@ -580,28 +583,34 @@ class Grid {
     //   console.log(e.target)
     // }
     pageNum() {
-        const active = document.querySelector('.active');
-        const pageNum = grid.page;
-        if (active && pageNum && Number(active.textContent) !== pageNum) {
-            const target = document.querySelector('.pagination').children[Number(pageNum) - 1];
-            active.classList.remove('active');
-            target.classList.add('active');
-        }
-        else {
-            console.log('didnt enter if ststement');
-        }
+        // const active = document.querySelector('.active') as HTMLAnchorElement
+        // const pageNum = grid.page
+        // if(active && pageNum && Number(active.textContent) !== pageNum){
+        //   const target =( document.querySelector('.pagination') as HTMLAnchorElement).children[Number(pageNum) -1]
+        //   active.classList.remove('active')
+        //   target.classList.add('active')
+        // }else{
+        //   console.log('didnt enter if ststement')
+        // }
     }
     pagination(e) {
         const target = e.target;
-        console.log(target.textContent);
-        if (target.classList.contains('active'))
-            return;
+        console.log(target.classList[0] === 'prev-page' && grid.page !== 1);
+        console.log(grid.hasNextPage);
+        console.log(target.classList[0] === 'next-page' && grid.hasNextPage);
+        // if(target.classList.contains('active'))return;
         console.log(target);
-        grid.page = Number(target.textContent);
-        grid.changePage(Number(target.textContent));
+        if (target.classList[0] === 'prev-page' && grid.page !== 1) {
+            grid.page -= 1;
+            grid.changePage(grid.page);
+        }
+        if (target.classList[0] === 'next-page' && grid.hasNextPage) {
+            grid.page += 1;
+            grid.changePage(grid.page);
+        }
     }
     changePage(pageNum) {
-        window.sessionStorage.setItem('page-num', JSON.stringify(grid.page));
+        window.sessionStorage.setItem('page-num', JSON.stringify(pageNum));
         window.location.href = 'grid.html';
     }
     h2fill() {
